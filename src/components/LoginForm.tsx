@@ -1,8 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import login_reg_image from "../assets/login.png";
+import { useState } from "react";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
   return (
     <div className="flex h-screen bg-[#dad5cb] items-center justify-center">
       <div className=" flex bg-white rounded-2xl shadow-lg w-[950px] h-[600px] overflow-hidden">
@@ -28,13 +31,24 @@ const LoginForm = () => {
               placeholder="Email address"
               className=" border border-gray-400 px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-orange-200 mb-4"
             />
-
-            <input
-              type="text"
-              placeholder="Password"
-              className="border border-gray-400 px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-orange-200 mb-4"
-            />
-
+            <div className="relative w-full">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                className="border border-gray-400 px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-orange-200 mb-4"
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-3 pb-3.5 flex items-center cursor-pointer"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? (
+                  <EyeIcon className="h-5 w-5 text-gray-500" />
+                ) : (
+                  <EyeOffIcon className="h-5 w-5 text-gray-500" />
+                )}
+              </button>
+            </div>
             <button className="w-full rounded-md border p-1.5 bg-amber-600 text-white hover:bg-amber-500 cursor-pointer shadow-md transition">
               LOGIN
             </button>
