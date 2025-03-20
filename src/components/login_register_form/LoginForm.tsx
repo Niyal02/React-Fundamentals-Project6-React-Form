@@ -6,7 +6,7 @@ import PasswordView from "../view_password_icon/PasswordViewIcon";
 import axios from "../../axios/axios";
 import { useState } from "react";
 import { AxiosError } from "axios";
-// import { Loader2Icon } from "lucide-react";
+import { Loader2Icon } from "lucide-react";
 
 interface LoginValues {
   email: string;
@@ -102,10 +102,13 @@ const LoginForm: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="mt-2 disabled:bg-gray-500 w-full rounded-md border p-1.5 bg-amber-600 text-white hover:bg-amber-500 cursor-pointer shadow-md transition"
+                  className="mt-2 disabled:bg-amber-600 w-full rounded-md border p-1.5 bg-amber-600 text-white hover:bg-amber-500 cursor-pointer shadow-md transition"
                 >
-                  {/* <Loader2Icon className="animate-spin" /> */}
-                  LOGIN
+                  {isSubmitting ? (
+                    <Loader2Icon className="animate-spin ml-48" />
+                  ) : (
+                    "LOGIN"
+                  )}
                 </button>
               </Form>
             )}

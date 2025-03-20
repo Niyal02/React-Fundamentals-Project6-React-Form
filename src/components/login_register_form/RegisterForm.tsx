@@ -1,15 +1,28 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "../../axios/axios";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import login_reg_image from "../../assets/login logo.png";
 import PasswordView from "../view_password_icon/PasswordViewIcon";
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import * as Yup from "yup";
+import { AxiosError } from "axios";
 
-const RegisterForm = () => {
+interface RegisterValues {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  // confirmPassword: string;
+}
+
+const RegisterForm: React.FC = () => {
   const navigate = useNavigate();
+  const [error, setError] = useState("");
 
   // Validation using Yup
   const validationSchema = Yup.object({
-    fullname: Yup.string().required("Fullname is required"),
+    firstName: Yup.string().required("First name is required"),
+    lastName: Yup.string().required("Last name is required"),
     email: Yup.string()
       .matches(
         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.([a-zA-Z]{2,})?$/,
@@ -22,10 +35,30 @@ const RegisterForm = () => {
       .matches(/\d/, "Password must contain at least one number")
       .matches(/[\W_]/, "Password must contain at least one special character")
       .required("Password is required"),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref("password")], "Password must match")
-      .required("Confirm Password is required"),
+    // confirmPassword: Yup.string()
+    //   .oneOf([Yup.ref("password")], "Password must match")
+    //   .required("Confirm Password is required"),
   });
+
+  const handleRegister = async (
+    values: RegisterValues,
+    { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
+  ) => {
+    setError("");
+    try {
+      const response = await axios.post("auth/signup", values);
+
+      console.log("Registration Successful:", response.data);
+
+      navigate("/");
+    } catch (err: unknown) {
+      if (err instanceof AxiosError) {
+        setError(err.response?.data?.message || "Something went wrong");
+      }
+    }
+    setSubmitting(false);
+  };
+
   return (
     <div className="flex h-screen bg-[#dad5cb] items-center justify-center">
       <div className=" flex bg-white rounded-2xl shadow-lg w-[950px] h-[600px] overflow-hidden">
@@ -45,64 +78,76 @@ const RegisterForm = () => {
             <p className="text-2xl mb-3 ">Create a new account</p>
           </div>
 
-          <Formik
+          <Formik<RegisterValues>
             initialValues={{
-              fullname: "",
+              firstName: "",
+              lastName: "",
               email: "",
               password: "",
-              confirmPassword: "",
+              // confirmPassword: "",
             }}
             validationSchema={validationSchema}
-            onSubmit={(values) => console.log("Register data:", values)}
+            onSubmit={handleRegister}
           >
             {({ isSubmitting }) => (
               <Form className="w-full">
                 <div className="flex flex-col gap-4">
-                  <div>
-                    <Field
-                      type="text"
-                      name="fullname"
-                      placeholder="Full Name"
-                      className="border border-gray-400 px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-orange-200"
-                    />
-                    <ErrorMessage
-                      name="fullname"
-                      component="div"
-                      className="text-red-500 text-sm mt-1"
-                    />
-                  </div>
-
-                  <div>
-                    <Field
-                      type="email"
-                      name="email"
-                      placeholder="Email address"
-                      className="border border-gray-400 px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-orange-200"
-                    />
-                    <ErrorMessage
-                      name="email"
-                      component="div"
-                      className="text-red-500 text-sm mt-1"
-                    />
-                  </div>
-
-                  <PasswordView placeholder="Password" name="password" />
-                  <PasswordView
-                    placeholder="Confirm Password"
-                    name="confirmPassword"
+                  <Field
+                    type="text"
+                    name="firstName"
+                    placeholder="First Name"
+                    className="border border-gray-400 px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-orange-200"
                   />
+                  <ErrorMessage
+                    name="firstName"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
+                  <Field
+                    type="text"
+                    name="lastName"
+                    placeholder="Last Name"
+                    className="border border-gray-400 px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-orange-200"
+                  />
+                  <ErrorMessage
+                    name="lastName"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
+
+                  <Field
+                    type="email"
+                    name="email"
+                    placeholder="Email address"
+                    className="border border-gray-400 px-3 py-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-orange-200"
+                  />
+                  <ErrorMessage
+                    name="email"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
+
+                  <PasswordView name="password" placeholder="Password" />
+                  {/* <PasswordView
+                    name="confirmPassword"
+                    placeholder="Confirm Password"
+                  /> */}
+
+                  {error && (
+                    <p className="text-red-500 text-sm mt-2">{error}</p>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="mt-4 w-full rounded-md border p-1.5 bg-amber-600 text-white hover:bg-amber-500 cursor-pointer shadow-md transition"
+                  >
+                    REGISTER
+                  </button>
                 </div>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="mt-4 w-full rounded-md border p-1.5 bg-amber-600 text-white hover:bg-amber-500 cursor-pointer shadow-md transition"
-                >
-                  REGISTER
-                </button>
               </Form>
             )}
           </Formik>
-
           <div className="text-center mt-2.5">
             <p className="mt-1.5">
               Already have an account?{" "}
