@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import login_reg_image from "../../assets/login logo.png";
-import PasswordViewIcon from "../view_password_icon/PasswordViewIcon";
+import PasswordView from "../view_password_icon/PasswordViewIcon";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 
@@ -23,7 +23,7 @@ const RegisterForm = () => {
       .matches(/[\W_]/, "Password must contain at least one special character")
       .required("Password is required"),
     confirmPassword: Yup.string()
-      .oneOf([Yup.ref("password")], "Password must match homie")
+      .oneOf([Yup.ref("password")], "Password must match")
       .required("Confirm Password is required"),
   });
   return (
@@ -86,8 +86,8 @@ const RegisterForm = () => {
                     />
                   </div>
 
-                  <PasswordViewIcon placeholder="Password" name="password" />
-                  <PasswordViewIcon
+                  <PasswordView placeholder="Password" name="password" />
+                  <PasswordView
                     placeholder="Confirm Password"
                     name="confirmPassword"
                   />

@@ -2,10 +2,20 @@ import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import login_reg_image from "../../assets/login logo.png";
-import PasswordViewIcon from "../view_password_icon/PasswordViewIcon";
+import PasswordView from "../view_password_icon/PasswordViewIcon";
+import axios from "../../axios/axios";
+import { useState } from "react";
+import { AxiosError } from "axios";
+// import { Loader2Icon } from "lucide-react";
 
-const LoginForm = () => {
+interface LoginValues {
+  email: string;
+  password: string;
+}
+
+const LoginForm: React.FC = () => {
   const navigate = useNavigate();
+  const [error, setError] = useState("");
 
   // Validation using Yup
   const validationSchema = Yup.object({
@@ -22,6 +32,29 @@ const LoginForm = () => {
       .matches(/[\W_]/, "Password must contain at least one special character")
       .required("Password is required"),
   });
+
+  const handleLogin = async (
+    values: LoginValues,
+    { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
+  ) => {
+    setError("");
+
+    try {
+      const response = await axios.post<{
+        accessToken: string;
+      }>("auth/login", values);
+      console.log("Login Successful", response.data);
+
+      //After successful login , the token wil be stored
+      localStorage.setItem("token", response.data.accessToken);
+      navigate("/dashboard");
+    } catch (err: unknown) {
+      if (err instanceof AxiosError) {
+        setError(err.response?.data?.message || "Something went wrong");
+      }
+    }
+    setSubmitting(false);
+  };
 
   return (
     <div className="flex h-screen bg-[#dad5cb] items-center justify-center">
@@ -42,12 +75,10 @@ const LoginForm = () => {
             <p className="text-2xl mb-4">Sign in to your account</p>
           </div>
 
-          <Formik
+          <Formik<LoginValues>
             initialValues={{ email: "", password: "" }}
             validationSchema={validationSchema}
-            onSubmit={(values) => {
-              console.log("Login Data:", values);
-            }}
+            onSubmit={handleLogin}
           >
             {({ isSubmitting }) => (
               <Form className="w-full">
@@ -65,13 +96,15 @@ const LoginForm = () => {
                   />
                 </div>
 
-                <PasswordViewIcon name="password" placeholder="Password" />
+                <PasswordView name="password" placeholder="Password" />
+                {error && <p className="text-red-500 text-sm">{error}</p>}
 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="mt-2 w-full rounded-md border p-1.5 bg-amber-600 text-white hover:bg-amber-500 cursor-pointer shadow-md transition"
+                  className="mt-2 disabled:bg-gray-500 w-full rounded-md border p-1.5 bg-amber-600 text-white hover:bg-amber-500 cursor-pointer shadow-md transition"
                 >
+                  {/* <Loader2Icon className="animate-spin" /> */}
                   LOGIN
                 </button>
               </Form>

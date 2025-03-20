@@ -2,7 +2,7 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useState } from "react";
 import { Field, ErrorMessage } from "formik";
 
-const PasswordViewIcon = ({
+const PasswordView = ({
   name,
   placeholder,
 }: {
@@ -41,4 +41,4 @@ const PasswordViewIcon = ({
   );
 };
 
-export default PasswordViewIcon;
+export default PasswordView;
