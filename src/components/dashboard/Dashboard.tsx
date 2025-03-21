@@ -1,9 +1,10 @@
-import React from "react";
+import Logout from "../logout/Logout";
 
 const Dashboard = () => {
   return (
-    <div className="flex justify-center ">
-      <h1 className="text-3xl mt-5">Dashboard</h1>
+    <div className=" ">
+      <h1 className=" flex text-3xl mt-5 items-start pl-3">Dashboard</h1>
+      <Logout />
     </div>
   );
 };

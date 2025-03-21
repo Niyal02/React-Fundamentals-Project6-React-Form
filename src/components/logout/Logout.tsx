@@ -1,7 +1,24 @@
 import React from "react";
+import { Toaster } from "react-hot-toast";
+import { FaSignOutAlt } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Logout = () => {
-  return <div></div>;
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    navigate("/");
+  };
+
+  return (
+    <div className="flex justify-end">
+      <button className="flex mr-4 cursor-pointer" onClick={handleLogout}>
+        {" "}
+        Logout <FaSignOutAlt className="ml-2 size-5" />
+      </button>
+      <Toaster />
+    </div>
+  );
 };
 
 export default Logout;

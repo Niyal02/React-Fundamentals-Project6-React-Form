@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import login_reg_image from "../../assets/login logo.png";
 import PasswordView from "../view_password_icon/PasswordViewIcon";
 import axios from "../../axios/axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AxiosError } from "axios";
 import { Loader2Icon } from "lucide-react";
 
@@ -16,13 +16,6 @@ interface LoginValues {
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    const isAuthenticated = localStorage.getItem("accessToken");
-    if (isAuthenticated) {
-      navigate("/dashboard");
-    }
-  }, [navigate]);
 
   // Validation using Yup
   const validationSchema = Yup.object({
