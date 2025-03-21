@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import login_reg_image from "../../assets/login logo.png";
 import PasswordView from "../view_password_icon/PasswordViewIcon";
 import axios from "../../axios/axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AxiosError } from "axios";
 import { Loader2Icon } from "lucide-react";
 
@@ -16,6 +16,13 @@ interface LoginValues {
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem("accessToken");
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
   // Validation using Yup
   const validationSchema = Yup.object({
@@ -46,11 +53,14 @@ const LoginForm: React.FC = () => {
       console.log("Login Successful", response.data);
 
       //After successful login , the token wil be stored
-      localStorage.setItem("token", response.data.accessToken);
+      localStorage.setItem("accessToken", response.data.accessToken);
       navigate("/dashboard");
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
-        setError(err.response?.data?.message || "Something went wrong");
+        setError(
+          err.response?.data?.message ||
+            "Something went wrong. Please try again later"
+        );
       }
     }
     setSubmitting(false);

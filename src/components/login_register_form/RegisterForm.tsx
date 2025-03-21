@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../axios/axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -6,6 +6,8 @@ import * as Yup from "yup";
 import login_reg_image from "../../assets/login logo.png";
 import PasswordView from "../view_password_icon/PasswordViewIcon";
 import { AxiosError } from "axios";
+import toast, { Toaster } from "react-hot-toast";
+import { Loader2Icon } from "lucide-react";
 
 interface RegisterValues {
   firstName: string;
@@ -18,6 +20,15 @@ interface RegisterValues {
 const RegisterForm: React.FC = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
+
+  // const notify = () => toast("Account Registered Succcessfully 🎉");
+
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem("accessToken");
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
   // Validation using Yup
   const validationSchema = Yup.object({
@@ -50,10 +61,17 @@ const RegisterForm: React.FC = () => {
 
       console.log("Registration Successful:", response.data);
 
-      navigate("/");
+      toast.success("Account Registered Successfully 🎉");
+
+      setTimeout(() => {
+        navigate("/");
+      }, 3000);
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
-        setError(err.response?.data?.message || "Something went wrong");
+        setError(
+          err.response?.data?.message ||
+            "Something went wrong. Please try again later"
+        );
       }
     }
     setSubmitting(false);
@@ -140,10 +158,16 @@ const RegisterForm: React.FC = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
+                    // onClick={notify}
                     className="mt-4 w-full rounded-md border p-1.5 bg-amber-600 text-white hover:bg-amber-500 cursor-pointer shadow-md transition"
                   >
-                    REGISTER
+                    {isSubmitting ? (
+                      <Loader2Icon className="animate-spin ml-48" />
+                    ) : (
+                      "REGISTER"
+                    )}
                   </button>
+                  <Toaster />
                 </div>
               </Form>
             )}
