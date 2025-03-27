@@ -21,8 +21,6 @@ const RegisterForm: React.FC = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
-  // const notify = () => toast("Account Registered Succcessfully 🎉");
-
   // Validation using Yup
   const validationSchema = Yup.object({
     firstName: Yup.string().required("First name is required"),
