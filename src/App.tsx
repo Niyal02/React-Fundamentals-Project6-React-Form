@@ -6,6 +6,8 @@ import Dashboard from "./components/dashboard/Dashboard";
 import { Toaster } from "react-hot-toast";
 // import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
+import Category from "./components/items/Category";
+import Products from "./components/items/Products";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
         <Route element={<PublicRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
+        <Route path="/category" element={<Category />} />
+        <Route path="/products" element={<Products />} />
         <Route path="/404-Page-not-found" element={<ErrorPage />} />
       </Routes>
       <Toaster
