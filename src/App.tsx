@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoginForm from "./components/login_register_form/LoginForm";
 import RegisterForm from "./components/login_register_form/RegisterForm";
-// import ErrorPage from "./components/404";
+import ErrorPage from "./components/404";
 import Dashboard from "./components/dashboard/Dashboard";
 import { Toaster } from "react-hot-toast";
 // import PrivateRoute from "./routes/PrivateRoute";
@@ -19,16 +19,16 @@ function App() {
         <Route element={<PublicRoute />}>
           <Route path="/" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
+          <Route path="/404-Page-not-found" element={<ErrorPage />} />
         </Route>
         <Route path="/user" element={<DashboardLayout />}>
           <Route element={<PublicRoute />}>
             <Route path="/user/dashboard" element={<Dashboard />} />
+            <Route path="/user/category" element={<Category />} />
+            <Route path="/user/products" element={<Products />} />
+            <Route path="/user/payment" element={<Payment />} />
+            <Route path="/user/order-history" element={<OrderHistory />} />
           </Route>
-          <Route path="/user/category" element={<Category />} />
-          <Route path="/user/products" element={<Products />} />
-          <Route path="/user/payment" element={<Payment />} />
-          <Route path="/user/order-history" element={<OrderHistory />} />
-          {/* <Route path="/404-Page-not-found" element={<ErrorPage />} /> */}
         </Route>
       </Routes>
       <Toaster

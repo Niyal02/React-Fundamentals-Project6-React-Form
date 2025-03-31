@@ -1,0 +1,68 @@
+[
+    {
+      "id": 1,
+      "catname": "John Doe",
+      "products": "johndoe@example.com"
+     
+    },
+    {
+      "id": 2,
+      "catname": "Jane Smith",
+      "products": "janesmith@example.com"
+      
+    },
+    {
+      "id": 3,
+      "catname": "Michael Johnson",
+      "products": "michaeljohnson@example.com"
+      
+    },
+    {
+      "id": 4,
+      "catname": "Emily Wilson",
+      "products": "emilywilson@example.com"
+      
+    },
+    {
+      "id": 5,
+      "catname": "Daniel Lee",
+      "products": "daniellee@example.com"
+      
+    },
+    {
+      "id": 6,
+      "catname": "Olivia Martinez",
+      "products": "oliviamartinez@example.com"
+      
+    },
+    {
+      "id": 7,
+      "catname": "William Thompson",
+      "products": "williamthompson@example.com"
+      
+    },
+    {
+      "id": 8,
+      "catname": "Barack Fouse",
+      "products": "fousebarack@example.com"
+      
+    },
+    {
+      "id": 9,
+      "catname": "Elon Musk",
+      "products": "musk300@example.com"
+      
+    },
+    {
+      "id": 10,
+      "catname": "Mealini William Dug",
+      "products": "mealinidug@example.com"
+      
+    },
+    {
+      "id": 11,
+      "catname": "Gary Larry",
+      "products": "larrygarypie@example.com"
+      
+    }
+  ]
