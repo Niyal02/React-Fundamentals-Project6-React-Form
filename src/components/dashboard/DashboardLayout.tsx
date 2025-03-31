@@ -13,9 +13,9 @@ const DashboardLayout = () => {
   const [activeItem, setActiveItem] = useState("Dashboard");
 
   return (
-    <div className=" flex">
+    <div className=" flex h-screen">
       <div
-        className={`bg-gray-700 h-screen p-4 flex flex-col text-white transition-all duration-400 ${
+        className={`bg-gray-700 h-screen p-4 flex flex-col text-white transition-all duration-400 fixed ${
           isCollapsed ? "w-16" : "w-56"
         }`}
       >
@@ -79,7 +79,13 @@ const DashboardLayout = () => {
         </nav>
       </div>
 
-      <div className="flex-1 p-6 bg-[#dad5cb] min-h-screen">
+      <div
+        className={`flex-1 p-6 bg-[#dad5cb] min-h-screen overflow-y-auto transition-all duration-400 `}
+        style={{
+          marginLeft: isCollapsed ? "4rem" : "14rem",
+          width: isCollapsed ? "calc(100% - 4rem)" : "calc(100% - 14rem)",
+        }}
+      >
         <Outlet />
       </div>
     </div>
