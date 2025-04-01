@@ -1,68 +1,56 @@
 [
     {
       "id": 1,
-      "catname": "John Doe",
-      "products": "johndoe@example.com"
+      "catname": "Electronics",
+      "products": "1743"
      
     },
     {
       "id": 2,
-      "catname": "Jane Smith",
-      "products": "janesmith@example.com"
+      "catname": "Beauty and Health",
+      "products": "241"
       
     },
     {
       "id": 3,
-      "catname": "Michael Johnson",
-      "products": "michaeljohnson@example.com"
+      "catname": "Books and Learning",
+      "products": "41"
       
     },
     {
       "id": 4,
-      "catname": "Emily Wilson",
-      "products": "emilywilson@example.com"
+      "catname": "Computer and Peripherals",
+      "products": "2640"
       
     },
     {
       "id": 5,
-      "catname": "Daniel Lee",
-      "products": "daniellee@example.com"
+      "catname": "Furnishing and Appliances",
+      "products": "152"
       
     },
     {
       "id": 6,
-      "catname": "Olivia Martinez",
-      "products": "oliviamartinez@example.com"
+      "catname": "Sports and Fitness",
+      "products": "833"
       
     },
     {
       "id": 7,
-      "catname": "William Thompson",
-      "products": "williamthompson@example.com"
+      "catname": "Toys and Video Games",
+      "products": "962"
       
     },
     {
       "id": 8,
-      "catname": "Barack Fouse",
-      "products": "fousebarack@example.com"
+      "catname": "Travel, Tours and Packages",
+      "products": "325"
       
     },
     {
       "id": 9,
-      "catname": "Elon Musk",
-      "products": "musk300@example.com"
-      
-    },
-    {
-      "id": 10,
-      "catname": "Mealini William Dug",
-      "products": "mealinidug@example.com"
-      
-    },
-    {
-      "id": 11,
-      "catname": "Gary Larry",
-      "products": "larrygarypie@example.com"
+      "catname": "Mobile Phone and Accessories",
+      "products": "3827"
       
     }
   ]

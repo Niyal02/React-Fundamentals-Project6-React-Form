@@ -15,6 +15,8 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Search,
+  Edit,
+  Trash2,
 } from "lucide-react";
 import React from "react";
 import mockData from "../../data/data.json";
@@ -32,7 +34,6 @@ const columns = [
     cell: (info) => info.getValue(),
     header: () => <span className="flex items-center">ID</span>,
   }),
-
   columnHelper.accessor("catname", {
     cell: (info) => info.getValue(),
     header: () => <span className="flex items-center">Category Name</span>,
@@ -44,9 +45,34 @@ const columns = [
     ),
     header: () => <span className="flex items-center">Total products</span>,
   }),
-  columnHelper.accessor("action", {
+  columnHelper.display({
+    id: "actions",
     header: () => <span className="flex items-center">Action</span>,
-    cell: (info) => info.getValue(),
+    cell: () => {
+      return (
+        <div className="flex items-center gap-3">
+          <div className="relative group">
+            <button className="text-gray-600 hover:text-blue-600 transition-colors">
+              <Edit size={18} />
+            </button>
+            <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              Edit
+              <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-700 rotate-45 -mb-1"></span>
+            </span>
+          </div>
+
+          <div className="relative group">
+            <button className="text-gray-600 hover:text-red-600 transition-colors">
+              <Trash2 size={18} />
+            </button>
+            <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              Delete
+              <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-700 rotate-45 -mb-1"></span>
+            </span>
+          </div>
+        </div>
+      );
+    },
   }),
 ];
 
@@ -69,16 +95,11 @@ export default function Category() {
     },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-
     onGlobalFilterChange: setGlobalFilter,
     getFilteredRowModel: getFilteredRowModel(),
   });
-
-  console.log(table.getRowModel());
-  console.log(table.getState().pagination.pageSize, "page size");
 
   return (
     <div className="flex flex-col min-h-screen max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -117,7 +138,9 @@ export default function Category() {
                         header.column.columnDef.header,
                         header.getContext()
                       )}
-                      <ArrowUpDown className="ml-2" size={14} />
+                      {header.column.getCanSort() && (
+                        <ArrowUpDown className="ml-2" size={14} />
+                      )}
                     </div>
                   </th>
                 ))}
@@ -181,7 +204,6 @@ export default function Category() {
           >
             <ChevronsLeft size={20} />
           </button>
-
           <button
             className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
             onClick={() => table.previousPage()}
@@ -189,7 +211,6 @@ export default function Category() {
           >
             <ChevronLeft size={20} />
           </button>
-
           <span className="flex items-center">
             <input
               min={1}
@@ -204,7 +225,6 @@ export default function Category() {
             />
             <span className="ml-1">of {table.getPageCount()}</span>
           </span>
-
           <button
             className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
             onClick={() => table.nextPage()}
@@ -212,7 +232,6 @@ export default function Category() {
           >
             <ChevronRight size={20} />
           </button>
-
           <button
             className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50"
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}

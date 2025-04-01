@@ -6,11 +6,12 @@ import { MdOutlineCategory } from "react-icons/md";
 import { GoBriefcase } from "react-icons/go";
 import { GrMoney } from "react-icons/gr";
 import { GoHistory } from "react-icons/go";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 
 const DashboardLayout = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [activeItem, setActiveItem] = useState("Dashboard");
+  const location = useLocation();
+  const [activeItem, setActiveItem] = useState(location.pathname);
 
   return (
     <div className=" flex h-screen">
@@ -112,9 +113,9 @@ const NavItem = ({
       className={`relative flex items-center mt-4 p-2 rounded cursor-pointer transition-all duration-350 ${
         isCollapsed ? "w-16 justify-center" : "w-full"
       } hover:w-50 hover:bg-gray-600 ${
-        activeItem === text ? "border border-gray-600 bg-gray-600" : ""
+        activeItem === to ? "border border-gray-600 bg-gray-600" : ""
       }`}
-      onClick={() => setActiveItem(text)}
+      onClick={() => setActiveItem(to)}
     >
       {icon}
       <span
