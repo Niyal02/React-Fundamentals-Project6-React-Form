@@ -16,31 +16,32 @@ import {
   ChevronsRight,
   Search,
   Edit,
-  Trash2,
   Plus,
 } from "lucide-react";
 import React, { useState } from "react";
 import mockData from "../../data/data.json";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import {
   Dialog,
-  DialogDescription,
+  Description,
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import DeleteButton from "../button/DeleteButton";
 
-type Person = {
+type Category = {
   id: number;
   catname: string;
   products: string;
 };
 
-const columnHelper = createColumnHelper<Person>();
+const columnHelper = createColumnHelper<Category>();
 
 const columns = [
-  columnHelper.accessor("id", {
-    cell: (info) => info.getValue(),
-    header: () => <span className="flex items-center">ID</span>,
+  columnHelper.display({
+    id: "s.n",
+    header: () => <span className="flex items-center">S.N.</span>,
+    cell: ({ row }) => row.index + 1,
   }),
   columnHelper.accessor("catname", {
     cell: (info) => info.getValue(),
@@ -56,7 +57,10 @@ const columns = [
   columnHelper.display({
     id: "actions",
     header: () => <span className="flex items-center">Action</span>,
-    cell: () => {
+    cell: ({ row }) => {
+      const itemId = row.original.id;
+      const itemName = row.original.catname;
+
       return (
         <div className="flex items-center gap-3">
           <div className="relative group">
@@ -69,15 +73,7 @@ const columns = [
             </span>
           </div>
 
-          <div className="relative group">
-            <button className="text-gray-600 hover:text-red-600 transition-colors">
-              <Trash2 size={18} />
-            </button>
-            <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              Delete
-              <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-700 rotate-45 -mb-1"></span>
-            </span>
-          </div>
+          <DeleteButton itemId={itemId} itemName={itemName} />
         </div>
       );
     },
@@ -110,6 +106,7 @@ export default function Category() {
         {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJhc2lsQHlvcG1haWwuY29tIiwic3ViIjoiZDFlYzQ4Y2UtZjUzYy00NmU3LWFmZDQtNTMwMWZhNWVjMzFjIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDM0OTE3MDAsImV4cCI6MTc0MzQ5NTMwMH0.Pq6pMPph1mJ6CQRvYjR9qSft7Eh0FqG_8sOoUx4wf8o`,
           },
         }
       );
@@ -123,7 +120,9 @@ export default function Category() {
       setIsAddDialogOpen(false);
     } catch (err) {
       console.log("Failed to create category", err);
-      setError(err.response?.data?.message || "Failed to create category");
+      if (err instanceof AxiosError) {
+        setError(err.response?.data?.message || "Failed to create category");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -187,9 +186,9 @@ export default function Category() {
             <DialogTitle className="text-xl font-bold text-gray-900">
               Add New Category
             </DialogTitle>
-            <DialogDescription className="mt-2 text-gray-600">
+            <Description className="mt-2 text-gray-600">
               Enter the name for the new category
-            </DialogDescription>
+            </Description>
 
             <div className="mt-4">
               <input
