@@ -19,7 +19,6 @@ import {
   Plus,
 } from "lucide-react";
 import React, { useState } from "react";
-import mockData from "../../data/data.json";
 import { AxiosError } from "axios";
 import {
   Dialog,
@@ -82,14 +81,55 @@ const columns = [
 ];
 
 export default function Category() {
-  const [data, setData] = React.useState([...mockData]);
+  const [data, setData] = React.useState<Category[]>([]);
   const [sorting, setSorting] = React.useState<ColumnSort[]>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isInitialLoading, setIsInitialLoading] = React.useState(true);
 
+  {
+    /* Fetching Categories */
+  }
+  const fetchCategories = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        throw new Error(
+          "No Authorization token found for fetching categories."
+        );
+      }
+      const response = await instance.get("/categories", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.log("Failed to fetch categories", error);
+      throw error;
+    }
+  };
+
+  React.useEffect(() => {
+    const loadCategories = async () => {
+      setIsInitialLoading(true);
+      try {
+        const categories = await fetchCategories();
+        setData(categories);
+      } catch (error) {
+        console.log("Error loading categories", error);
+      } finally {
+        setIsInitialLoading(false);
+      }
+    };
+  });
+
+  {
+    /* Handle Add Categories */
+  }
   const handleAddCategory = async () => {
     if (!newCategoryName.trim()) {
       setError("Category name cannot be empty");
