@@ -5,6 +5,7 @@ const instance = axios.create({
     headers: {
       "ngrok-skip-browser-warning": "69420",
     }
+    
   });
 
   export default instance

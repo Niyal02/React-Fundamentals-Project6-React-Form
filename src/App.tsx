@@ -12,6 +12,7 @@ import DashboardLayout from "./components/dashboard/DashboardLayout";
 import Payment from "./components/pages/Payment";
 import OrderHistory from "./components/pages/OrderHistory";
 import PrivateRoute from "./routes/PrivateRoute";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           </Route>
         </Route>
       </Routes>
+      <ToastContainer />
       <Toaster
         toastOptions={{
           duration: 3000,

@@ -8,6 +8,9 @@ import {
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { Trash2 } from "lucide-react";
 import instance from "../../axios/axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { AxiosError } from "axios";
 
 type DeleteButtonProps = {
   itemId: string;
@@ -29,17 +32,50 @@ export default function DeleteButton({
     setError("");
 
     try {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        throw new Error("Authentication token not found");
+      }
+
       await instance.delete(`/categories/${itemId}`, {
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
+      });
+
+      // Show success toast
+      toast.success(`${itemName} category deleted successfully!`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
       });
 
       if (onDeleteSuccess) onDeleteSuccess();
       setIsOpen(false);
-    } catch (err) {
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
       console.error("Failed to delete category:", err);
-      setError("Failed to delete category. Please try again.");
+      setError(
+        err.response?.data?.message ||
+          "Failed to delete category. Please try again."
+      );
+
+      // Show error toast
+      toast.error(`Failed to delete ${itemName} category`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } finally {
       setIsDeleting(false);
     }
@@ -93,8 +129,8 @@ export default function DeleteButton({
                     </DialogTitle>
                     <div className="mt-2">
                       <p className="text-sm text-gray-500">
-                        Are you sure you want to delete "{itemName}"? This
-                        action cannot be undone.
+                        Are you sure you want to delete "{itemName}" category?
+                        This action cannot be undone.
                       </p>
                       {error && (
                         <p className="mt-2 text-sm text-red-600">{error}</p>
