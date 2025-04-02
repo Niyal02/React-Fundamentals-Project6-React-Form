@@ -30,8 +30,8 @@ import DeleteButton from "../button/DeleteButton";
 import instance from "../../axios/axios";
 
 type Category = {
-  id: number;
-  catname: string;
+  uuid: string;
+  name: string;
   products: string;
 };
 
@@ -43,14 +43,14 @@ const columns = [
     header: () => <span className="flex items-center">S.N.</span>,
     cell: ({ row }) => row.index + 1,
   }),
-  columnHelper.accessor("catname", {
+  columnHelper.accessor("name", {
     cell: (info) => info.getValue(),
     header: () => <span className="flex items-center">Category Name</span>,
   }),
   columnHelper.accessor("products", {
     id: "products",
     cell: (info) => (
-      <span className="italic text-blue-600">{info.getValue()}</span>
+      <span className="italic text-blue-600">{info.getValue() || 0}</span>
     ),
     header: () => <span className="flex items-center">Total products</span>,
   }),
@@ -58,8 +58,8 @@ const columns = [
     id: "actions",
     header: () => <span className="flex items-center">Action</span>,
     cell: ({ row }) => {
-      const itemId = row.original.id;
-      const itemName = row.original.catname;
+      const itemId = row.original.uuid;
+      const itemName = row.original.name;
 
       return (
         <div className="flex items-center gap-3">
@@ -98,7 +98,7 @@ export default function Category() {
       const token = localStorage.getItem("accessToken");
       if (!token) {
         throw new Error(
-          "No Authorization token found for fetching categories."
+          "No Authentication token found for fetching categories."
         );
       }
       const response = await instance.get("/categories", {
@@ -117,8 +117,8 @@ export default function Category() {
     const loadCategories = async () => {
       setIsInitialLoading(true);
       try {
-        const categories = await fetchCategories();
-        setData(categories);
+        const data = await fetchCategories();
+        setData(data.categories);
       } catch (error) {
         console.log("Error loading categories", error);
       } finally {
@@ -127,6 +127,7 @@ export default function Category() {
     };
     loadCategories();
   }, []);
+  console.log({ data });
 
   {
     /* Handle Add Categories */
@@ -139,14 +140,12 @@ export default function Category() {
     setIsLoading(true);
     setError("");
 
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-      setError("Authorization token not found");
-      setIsLoading(false);
-      return;
-    }
-
     try {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        throw new Error("Authorization token not found");
+      }
+
       const response = await instance.post(
         "/categories",
         {
@@ -160,8 +159,8 @@ export default function Category() {
         }
       );
       const newCategory = {
-        id: response.data.id,
-        catname: response.data.name,
+        uuid: response.data.id,
+        name: response.data.name,
         products: response.data.products || "0",
       };
       setData((prev) => [newCategory, ...prev]);

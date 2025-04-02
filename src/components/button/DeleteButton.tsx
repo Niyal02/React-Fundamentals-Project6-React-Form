@@ -10,7 +10,7 @@ import { Trash2 } from "lucide-react";
 import instance from "../../axios/axios";
 
 type DeleteButtonProps = {
-  itemId: number;
+  itemId: string;
   itemName: string;
   onDeleteSuccess?: () => void;
 };
