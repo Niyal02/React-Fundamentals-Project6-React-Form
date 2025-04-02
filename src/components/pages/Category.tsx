@@ -125,7 +125,8 @@ export default function Category() {
         setIsInitialLoading(false);
       }
     };
-  });
+    loadCategories();
+  }, []);
 
   {
     /* Handle Add Categories */
@@ -331,7 +332,16 @@ export default function Category() {
             ))}
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {table.getRowModel().rows.length > 0 ? (
+            {isInitialLoading ? (
+              <tr>
+                <td
+                  colSpan={columns.length}
+                  className="text-center py-6 text-gray-500"
+                >
+                  Loading Categories...
+                </td>
+              </tr>
+            ) : table.getRowModel().rows.length > 0 ? (
               table.getRowModel().rows.map((row) => (
                 <tr key={row.id} className="hover:bg-gray-50">
                   {row.getVisibleCells().map((cell) => (
@@ -353,7 +363,7 @@ export default function Category() {
                   colSpan={columns.length}
                   className="text-center py-6 text-gray-500"
                 >
-                  No Data Available
+                  No Categories Available
                 </td>
               </tr>
             )}
