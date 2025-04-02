@@ -47,7 +47,7 @@ const LoginForm: React.FC = () => {
 
       //After successful login , the token wil be stored
       localStorage.setItem("accessToken", response.data.accessToken);
-      navigate("/dashboard");
+      navigate("/user");
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
         setError(

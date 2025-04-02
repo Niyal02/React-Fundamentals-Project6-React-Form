@@ -7,7 +7,7 @@ import {
 } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { Trash2 } from "lucide-react";
-import axios from "axios";
+import instance from "../../axios/axios";
 
 type DeleteButtonProps = {
   itemId: number;
@@ -29,14 +29,11 @@ export default function DeleteButton({
     setError("");
 
     try {
-      await axios.delete(
-        `https://e172-202-166-220-144.ngrok-free.app/categories/${itemId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await instance.delete(`/categories/${itemId}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (onDeleteSuccess) onDeleteSuccess();
       setIsOpen(false);

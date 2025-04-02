@@ -11,6 +11,7 @@ import Products from "./components/pages/Products";
 import DashboardLayout from "./components/dashboard/DashboardLayout";
 import Payment from "./components/pages/Payment";
 import OrderHistory from "./components/pages/OrderHistory";
+import PrivateRoute from "./routes/PrivateRoute";
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
           <Route path="/404-Page-not-found" element={<ErrorPage />} />
         </Route>
         <Route path="/user" element={<DashboardLayout />}>
-          <Route element={<PublicRoute />}>
+          <Route element={<PrivateRoute />}>
             <Route path="/user/dashboard" element={<Dashboard />} />
             <Route path="/user/category" element={<Category />} />
             <Route path="/user/products" element={<Products />} />

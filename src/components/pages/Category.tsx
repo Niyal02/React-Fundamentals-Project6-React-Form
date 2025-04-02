@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import mockData from "../../data/data.json";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import {
   Dialog,
   Description,
@@ -28,6 +28,7 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import DeleteButton from "../button/DeleteButton";
+import instance from "../../axios/axios";
 
 type Category = {
   id: number;
@@ -97,16 +98,23 @@ export default function Category() {
     setIsLoading(true);
     setError("");
 
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      setError("Authorization token not found");
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const response = await axios.post(
-        "https://e172-202-166-220-144.ngrok-free.app/categories",
+      const response = await instance.post(
+        "/categories",
         {
           name: newCategoryName,
         },
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJhc2lsQHlvcG1haWwuY29tIiwic3ViIjoiZDFlYzQ4Y2UtZjUzYy00NmU3LWFmZDQtNTMwMWZhNWVjMzFjIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDM0OTE3MDAsImV4cCI6MTc0MzQ5NTMwMH0.Pq6pMPph1mJ6CQRvYjR9qSft7Eh0FqG_8sOoUx4wf8o`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
