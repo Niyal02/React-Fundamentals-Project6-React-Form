@@ -16,7 +16,7 @@ const DashboardLayout = () => {
   return (
     <div className=" flex h-screen">
       <div
-        className={`bg-gray-700 h-screen p-4 flex flex-col text-white transition-all duration-400 fixed ${
+        className={`bg-amber-600 h-screen p-4 flex flex-col text-white transition-all duration-400 fixed ${
           isCollapsed ? "w-16" : "w-56"
         }`}
       >
@@ -73,7 +73,7 @@ const DashboardLayout = () => {
           <div
             className={`relative flex  mt-90 p-2 rounded cursor-pointer transition-all duration-350 size-2${
               isCollapsed ? "w-16 justify-center" : "w-full"
-            } hover:w-30 hover:bg-gray-600 `}
+            } hover:w-30 hover:bg-amber-700 `}
           >
             <Logout />
           </div>
@@ -112,8 +112,8 @@ const NavItem = ({
     <div
       className={`relative flex items-center mt-4 p-2 rounded cursor-pointer transition-all duration-350 ${
         isCollapsed ? "w-16 justify-center" : "w-full"
-      } hover:w-50 hover:bg-gray-600 ${
-        activeItem === to ? "border border-gray-600 bg-gray-600" : ""
+      } hover:w-50 hover:bg-amber-700 ${
+        activeItem === to ? "border border-amber-500 bg-amber-700 " : ""
       }`}
       onClick={() => setActiveItem(to)}
     >
