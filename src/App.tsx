@@ -13,33 +13,38 @@ import Payment from "./components/pages/Payment";
 import OrderHistory from "./components/pages/OrderHistory";
 import PrivateRoute from "./routes/PrivateRoute";
 import { ToastContainer } from "react-toastify";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<PublicRoute />}>
-          <Route path="/" element={<LoginForm />} />
-          <Route path="/register" element={<RegisterForm />} />
-          <Route path="/404-Page-not-found" element={<ErrorPage />} />
-        </Route>
-        <Route path="/user" element={<DashboardLayout />}>
-          <Route element={<PrivateRoute />}>
-            <Route path="/user/dashboard" element={<Dashboard />} />
-            <Route path="/user/category" element={<Category />} />
-            <Route path="/user/products" element={<Products />} />
-            <Route path="/user/payment" element={<Payment />} />
-            <Route path="/user/order-history" element={<OrderHistory />} />
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<PublicRoute />}>
+            <Route path="/" element={<LoginForm />} />
+            <Route path="/register" element={<RegisterForm />} />
+            <Route path="/404-Page-not-found" element={<ErrorPage />} />
           </Route>
-        </Route>
-      </Routes>
-      <ToastContainer />
-      <Toaster
-        toastOptions={{
-          duration: 3000,
-        }}
-      />
-    </BrowserRouter>
+          <Route path="/user" element={<DashboardLayout />}>
+            <Route element={<PrivateRoute />}>
+              <Route path="/user/dashboard" element={<Dashboard />} />
+              <Route path="/user/category" element={<Category />} />
+              <Route path="/user/products" element={<Products />} />
+              <Route path="/user/payment" element={<Payment />} />
+              <Route path="/user/order-history" element={<OrderHistory />} />
+            </Route>
+          </Route>
+        </Routes>
+        <ToastContainer />
+        <Toaster
+          toastOptions={{
+            duration: 3000,
+          }}
+        />
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
 

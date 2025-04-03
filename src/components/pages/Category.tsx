@@ -15,7 +15,6 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Search,
-  Edit,
   Plus,
 } from "lucide-react";
 import React, { useState } from "react";
@@ -24,6 +23,8 @@ import { AxiosError } from "axios";
 import DeleteButton from "../button/DeleteButton";
 import instance from "../../axios/axios";
 import AddCategoryDialogCmp from "../small components/AddCategoryDialogCmp";
+import EditButton from "../button/EditButton";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 type Category = {
   uuid: string;
@@ -59,15 +60,7 @@ const columns = [
 
       return (
         <div className="flex items-center gap-3">
-          <div className="relative group">
-            <button className="text-gray-600 hover:text-blue-600 transition-colors">
-              <Edit size={18} />
-            </button>
-            <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              Edit
-              <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-700 rotate-45 -mb-1"></span>
-            </span>
-          </div>
+          <EditButton itemId={itemId} itemName={itemName} />
 
           <DeleteButton itemId={itemId} itemName={itemName} />
         </div>
@@ -77,14 +70,14 @@ const columns = [
 ];
 
 export default function Category() {
-  const [data, setData] = React.useState<Category[]>([]);
+  // const [data, setData] = React.useState<Category[]>([]);
   const [sorting, setSorting] = React.useState<ColumnSort[]>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [isInitialLoading, setIsInitialLoading] = React.useState(true);
+  // const [isInitialLoading, setIsInitialLoading] = React.useState(true);
 
   {
     /* Fetching Categories */
@@ -102,28 +95,35 @@ export default function Category() {
           Authorization: `Bearer ${token}`,
         },
       });
-      return response.data;
+      return response.data.categories;
     } catch (error) {
       console.log("Failed to fetch categories", error);
       throw error;
     }
   };
 
-  React.useEffect(() => {
-    const loadCategories = async () => {
-      setIsInitialLoading(true);
-      try {
-        const data = await fetchCategories();
-        setData(data.categories);
-      } catch (error) {
-        console.log("Error loading categories", error);
-      } finally {
-        setIsInitialLoading(false);
-      }
-    };
-    loadCategories();
-  }, []);
-  console.log({ data });
+  const query = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+  });
+  const { data = [], isPending: isInitialLoading } = query;
+  const queryClient = useQueryClient();
+
+  // React.useEffect(() => {
+  //   const loadCategories = async () => {
+  //     setIsInitialLoading(true);
+  //     try {
+  //       const data = await fetchCategories();
+  //       setData(data.categories);
+  //     } catch (error) {
+  //       console.log("Error loading categories", error);
+  //     } finally {
+  //       setIsInitialLoading(false);
+  //     }
+  //   };
+  //   loadCategories();
+  // }, []);
+  // console.log({ data });
 
   {
     /* Handle Add Categories */
@@ -142,7 +142,7 @@ export default function Category() {
         throw new Error("Authorization token not found");
       }
 
-      const response = await instance.post(
+      await instance.post(
         "/categories",
         {
           name: newCategoryName,
@@ -154,12 +154,16 @@ export default function Category() {
           },
         }
       );
-      const newCategory = {
-        uuid: response.data.id,
-        name: response.data.name,
-        products: response.data.products || "0",
-      };
-      setData((prev) => [newCategory, ...prev]);
+      // const newCategory = {
+      //   uuid: response.data.id,
+      //   name: response.data.name,
+      //   products: response.data.products || "0",
+      // };
+      // setData((prev) => [newCategory, ...prev]);
+      queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
+
       setNewCategoryName("");
       setIsAddDialogOpen(false);
     } catch (err) {
@@ -276,7 +280,7 @@ export default function Category() {
                   Loading Categories...
                 </td>
               </tr>
-            ) : table.getRowModel().rows.length > 0 ? (
+            ) : table.getRowModel().rows?.length > 0 ? (
               table.getRowModel().rows.map((row) => (
                 <tr key={row.id} className="hover:bg-gray-50">
                   {row.getVisibleCells().map((cell) => (
@@ -295,7 +299,7 @@ export default function Category() {
             ) : (
               <tr>
                 <td
-                  colSpan={columns.length}
+                  colSpan={columns?.length}
                   className="text-center py-6 text-gray-500"
                 >
                   No Categories Available
