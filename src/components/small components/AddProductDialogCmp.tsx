@@ -33,7 +33,7 @@ const AddProductDialogCmp = ({
             Add New product
           </DialogTitle>
           <Description className="mt-2 text-gray-600">
-            Enter the name for the new Product
+            Fill the areas to add a new Product
           </Description>
 
           <div className="mt-4">
@@ -50,6 +50,22 @@ const AddProductDialogCmp = ({
               autoFocus
             />
             {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+
+            <div className="mt-2">
+              <input
+                type="text"
+                value={newProductName}
+                onChange={(e) => {
+                  onProductNameChange(e.target.value);
+                }}
+                placeholder="Product name"
+                className={`w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
+                  error ? "border-red-500" : "border-gray-300"
+                }`}
+                autoFocus
+              />
+              {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+            </div>
           </div>
 
           <div className="mt-6 flex justify-end gap-3">
