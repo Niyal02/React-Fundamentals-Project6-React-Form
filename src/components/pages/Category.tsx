@@ -20,10 +20,10 @@ import {
 import React, { useState } from "react";
 import { AxiosError } from "axios";
 
-import DeleteButton from "../button/DeleteButton";
+import DeleteButton from "../button/categoryButton/DeleteButton";
 import instance from "../../axios/axios";
 import AddCategoryDialogCmp from "../small components/AddCategoryDialogCmp";
-import EditButton from "../button/EditButton";
+import EditButton from "../button/categoryButton/EditButton";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 type Category = {

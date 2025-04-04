@@ -20,16 +20,15 @@ import {
 import React, { useState } from "react";
 import { AxiosError } from "axios";
 
-import DeleteButton from "../button/DeleteButton";
+import DeleteButton from "../button/categoryButton/DeleteButton";
 import instance from "../../axios/axios";
-import EditButton from "../button/EditButton";
+import EditButton from "../button/categoryButton/EditButton";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import AddProductDialogCmp from "../small components/AddProductDialogCmp";
 
 type Product = {
   uuid: string;
   name: string;
-  // products: string;
   price: number;
   category: {
     uuid: string;

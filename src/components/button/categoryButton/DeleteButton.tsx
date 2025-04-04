@@ -7,7 +7,7 @@ import {
 } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { Trash2 } from "lucide-react";
-import instance from "../../axios/axios";
+import instance from "../../../axios/axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AxiosError } from "axios";

@@ -7,7 +7,7 @@ import {
 import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import instance from "../../axios/axios";
+import instance from "../../../axios/axios";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface EditButtonProps {
@@ -25,7 +25,7 @@ const EditButton = ({ itemId, itemName, onEditSuccess }: EditButtonProps) => {
 
   const handleEdit = async () => {
     if (!editedName.trim()) {
-      setError("Category name cannot be empty");
+      setError(` ${itemName} name cannot be empty`);
       return;
     }
     setIsLoading(true);
