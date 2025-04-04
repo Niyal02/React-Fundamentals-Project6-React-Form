@@ -2,9 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoginForm from "./components/login_register_form/LoginForm";
 import RegisterForm from "./components/login_register_form/RegisterForm";
 import ErrorPage from "./components/404";
-import Dashboard from "./components/dashboard/Dashboard";
 import { Toaster } from "react-hot-toast";
-// import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 import Category from "./components/pages/Category";
 import Products from "./components/pages/Products";
@@ -14,6 +12,7 @@ import OrderHistory from "./components/pages/OrderHistory";
 import PrivateRoute from "./routes/PrivateRoute";
 import { ToastContainer } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Dashboard from "./components/dashboard/Dashboard";
 
 const queryClient = new QueryClient();
 

@@ -22,9 +22,9 @@ import { AxiosError } from "axios";
 
 import DeleteButton from "../button/DeleteButton";
 import instance from "../../axios/axios";
-import AddCategoryDialogCmp from "../small components/AddCategoryDialogCmp";
 import EditButton from "../button/EditButton";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import AddProductDialogCmp from "../small components/AddProductDialogCmp";
 
 type Product = {
   uuid: string;
@@ -80,46 +80,44 @@ export default function Products() {
   const [sorting, setSorting] = React.useState<ColumnSort[]>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [newCategoryName, setNewCategoryName] = useState("");
+  const [newProductName, setNewProductName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   {
-    /* Fetching Categories */
+    /* Fetching Products */
   }
-  const fetchCategories = async () => {
+  const fetchProducts = async () => {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) {
-        throw new Error(
-          "No Authentication token found for fetching categories."
-        );
+        throw new Error("No Authentication token found for fetching products.");
       }
-      const response = await instance.get("/categories", {
+      const response = await instance.get("/products", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       return response.data;
     } catch (error) {
-      console.log("Failed to fetch categories", error);
+      console.log("Failed to fetch products", error);
       throw error;
     }
   };
 
   const query = useQuery({
-    queryKey: ["categories"],
-    queryFn: fetchCategories,
+    queryKey: ["products"],
+    queryFn: fetchProducts,
   });
   const { data = [], isPending: isInitialLoading } = query;
   const queryClient = useQueryClient();
 
   {
-    /* Handle Add Categories */
+    /* Handle Add Products */
   }
-  const handleAddCategory = async () => {
-    if (!newCategoryName.trim()) {
-      setError("Category name cannot be empty");
+  const handleAddProduct = async () => {
+    if (!newProductName.trim()) {
+      setError("Product name cannot be empty");
       return;
     }
     setIsLoading(true);
@@ -132,9 +130,9 @@ export default function Products() {
       }
 
       await instance.post(
-        "/categories",
+        "/products",
         {
-          name: newCategoryName,
+          name: newProductName,
         },
         {
           headers: {
@@ -145,14 +143,14 @@ export default function Products() {
       );
 
       queryClient.invalidateQueries({
-        queryKey: ["categories"],
+        queryKey: ["products"],
       });
-      setNewCategoryName("");
+      setNewProductName("");
       setIsAddDialogOpen(false);
     } catch (err) {
-      console.log("Failed to create category", err);
+      console.log("Failed to create product", err);
       if (err instanceof AxiosError) {
-        setError(err.response?.data?.message || "Failed to create category");
+        setError(err.response?.data?.message || "Failed to create product");
       }
     } finally {
       setIsLoading(false);
@@ -194,7 +192,7 @@ export default function Products() {
         />
       </div>
 
-      {/* Add Category Button */}
+      {/* Add product Button */}
       <div className="mb-4">
         <button
           onClick={() => setIsAddDialogOpen(true)}
@@ -206,18 +204,18 @@ export default function Products() {
       </div>
 
       {/* Add Category Dialog */}
-      <AddCategoryDialogCmp
+      <AddProductDialogCmp
         isOpen={isAddDialogOpen}
         onClose={() => {
           setIsAddDialogOpen(false);
           setError("");
         }}
-        newCategoryName={newCategoryName}
-        onCategoryNameChange={(name) => {
-          setNewCategoryName(name);
+        newProductName={newProductName}
+        onProductNameChange={(name) => {
+          setNewProductName(name);
           setError("");
         }}
-        onSubmit={handleAddCategory}
+        onSubmit={handleAddProduct}
         isLoading={isLoading}
         error={error}
       />
