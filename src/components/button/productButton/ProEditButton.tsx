@@ -71,8 +71,8 @@ const ProEditButton = ({
       setIsOpen(false);
     } catch (error) {
       console.error("Failed to update product:", error);
-      setError("Failed to update category. Please try again.");
-      toast.error("Failed to update category", {
+      setError("Failed to update product. Please try again.");
+      toast.error("Failed to update product", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -123,10 +123,10 @@ const ProEditButton = ({
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <DialogPanel className="w-full max-w-md rounded-xl bg-white p-6">
             <DialogTitle className="text-xl font-bold text-gray-900">
-              Edit Category
+              Edit product
             </DialogTitle>
             <Description className="mt-2 text-gray-600">
-              Update the name for the category
+              Update the name for the product
             </Description>
 
             <div className="mt-4">
