@@ -29,7 +29,7 @@ const ProEditButton = ({
 
   const handleEdit = async () => {
     if (!editedName.trim()) {
-      setError(` ${itemName} Name cannot be empty`);
+      setError(` ${itemName} Name cannot be empty. Please enter a valid name.`);
       return;
     }
     setIsLoading(true);
@@ -44,6 +44,7 @@ const ProEditButton = ({
       await instance.patch(
         `/products/${itemId}`,
         { name: editedName },
+
         {
           headers: {
             "Content-Type": "application/json",
