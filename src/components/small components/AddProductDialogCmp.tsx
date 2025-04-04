@@ -4,68 +4,139 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import { useQuery } from "@tanstack/react-query";
+import instance from "../../axios/axios";
+
+interface Category {
+  uuid: string;
+  name: string;
+}
 
 interface AddProductDialogProps {
   isOpen: boolean;
   onClose: () => void;
   newProductName: string;
   onProductNameChange: (name: string) => void;
+  newProductPrice: string;
+  onProductPriceChange: (price: string) => void;
+  newProductCategory: string;
+  onProductCategoryChange: (category: string) => void;
   onSubmit: () => Promise<void>;
   isLoading: boolean;
   error: string;
 }
+
+const fetchCategories = async (): Promise<Category[]> => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+    const response = await instance.get("/categories", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.categories;
+  } catch (error) {
+    console.error("Failed to fetch categories:", error);
+    throw error;
+  }
+};
 
 const AddProductDialogCmp = ({
   isOpen,
   onClose,
   newProductName,
   onProductNameChange,
+  newProductPrice,
+  onProductPriceChange,
+  newProductCategory,
+  onProductCategoryChange,
   onSubmit,
   isLoading,
   error,
 }: AddProductDialogProps) => {
+  const { data: categories = [], isLoading: isCategoriesLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+  });
+
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <DialogPanel className="w-full max-w-md rounded-xl bg-white p-6">
           <DialogTitle className="text-xl font-bold text-gray-900">
-            Add New product
+            Add New Product
           </DialogTitle>
           <Description className="mt-2 text-gray-600">
-            Fill the areas to add a new Product
+            Fill the fields to add a new Product
           </Description>
 
-          <div className="mt-4">
-            <input
-              type="text"
-              value={newProductName}
-              onChange={(e) => {
-                onProductNameChange(e.target.value);
-              }}
-              placeholder="Product name"
-              className={`w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
-                error ? "border-red-500" : "border-gray-300"
-              }`}
-              autoFocus
-            />
-            {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
-
-            <div className="mt-2">
+          <div className="mt-4 space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Product Name
+              </label>
               <input
                 type="text"
                 value={newProductName}
-                onChange={(e) => {
-                  onProductNameChange(e.target.value);
-                }}
-                placeholder="Product name"
+                onChange={(e) => onProductNameChange(e.target.value)}
+                placeholder="Enter product name"
                 className={`w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
                   error ? "border-red-500" : "border-gray-300"
                 }`}
                 autoFocus
               />
-              {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Price
+              </label>
+              <input
+                type="number"
+                value={newProductPrice}
+                onChange={(e) => onProductPriceChange(e.target.value)}
+                placeholder="0.00"
+                className={`w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
+                  error ? "border-red-500" : "border-gray-300"
+                }`}
+                min="0"
+                step="0.01"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Category
+              </label>
+              <select
+                value={newProductCategory}
+                onChange={(e) => onProductCategoryChange(e.target.value)}
+                disabled={isCategoriesLoading}
+                className={`w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
+                  error ? "border-red-500" : "border-gray-300"
+                } ${
+                  isCategoriesLoading ? "bg-gray-100 cursor-not-allowed" : ""
+                }`}
+              >
+                <option value="">Select a category</option>
+                {categories.map((category) => (
+                  <option key={category.uuid} value={category.uuid}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+              {isCategoriesLoading && (
+                <p className="mt-1 text-sm text-gray-500">
+                  Loading categories...
+                </p>
+              )}
+            </div>
+
+            {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
           </div>
 
           <div className="mt-6 flex justify-end gap-3">
@@ -78,7 +149,12 @@ const AddProductDialogCmp = ({
             </button>
             <button
               onClick={onSubmit}
-              disabled={!newProductName.trim() || isLoading}
+              disabled={
+                !newProductName.trim() ||
+                !newProductPrice ||
+                !newProductCategory ||
+                isLoading
+              }
               className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {isLoading ? (

@@ -29,9 +29,12 @@ import AddProductDialogCmp from "../small components/AddProductDialogCmp";
 type Product = {
   uuid: string;
   name: string;
-  products: string;
+  // products: string;
   price: number;
-  category: string;
+  category: {
+    uuid: string;
+    name: string;
+  };
 };
 
 const columnHelper = createColumnHelper<Product>();
@@ -55,7 +58,7 @@ const columns = [
     header: () => <span className="flex items-center"> Price</span>,
   }),
   columnHelper.accessor("category", {
-    cell: (info) => info.getValue(),
+    cell: (info) => info.getValue().name,
     header: () => <span className="flex items-center">Category</span>,
   }),
   columnHelper.display({
@@ -79,8 +82,10 @@ const columns = [
 export default function Products() {
   const [sorting, setSorting] = React.useState<ColumnSort[]>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [newProductName, setNewProductName] = useState("");
+  const [newProductPrice, setNewProductPrice] = useState("");
+  const [newProductCategory, setNewProductCategory] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -133,6 +138,8 @@ export default function Products() {
         "/products",
         {
           name: newProductName,
+          price: parseFloat(newProductPrice),
+          category: newProductCategory,
         },
         {
           headers: {
@@ -146,7 +153,7 @@ export default function Products() {
         queryKey: ["products"],
       });
       setNewProductName("");
-      setIsAddDialogOpen(false);
+      setIsOpen(false);
     } catch (err) {
       console.log("Failed to create product", err);
       if (err instanceof AxiosError) {
@@ -195,7 +202,7 @@ export default function Products() {
       {/* Add product Button */}
       <div className="mb-4">
         <button
-          onClick={() => setIsAddDialogOpen(true)}
+          onClick={() => setIsOpen(true)}
           className="flex items-center gap-1 px-2 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors cursor-pointer"
         >
           <Plus size={18} />
@@ -205,16 +212,14 @@ export default function Products() {
 
       {/* Add Category Dialog */}
       <AddProductDialogCmp
-        isOpen={isAddDialogOpen}
-        onClose={() => {
-          setIsAddDialogOpen(false);
-          setError("");
-        }}
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
         newProductName={newProductName}
-        onProductNameChange={(name) => {
-          setNewProductName(name);
-          setError("");
-        }}
+        onProductNameChange={setNewProductName}
+        newProductPrice={newProductPrice}
+        onProductPriceChange={setNewProductPrice}
+        newProductCategory={newProductCategory}
+        onProductCategoryChange={setNewProductCategory}
         onSubmit={handleAddProduct}
         isLoading={isLoading}
         error={error}
