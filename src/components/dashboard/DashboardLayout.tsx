@@ -3,9 +3,9 @@ import Logout from "../logout/Logout";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { FiHome } from "react-icons/fi";
 import { MdOutlineCategory } from "react-icons/md";
-import { GoBriefcase } from "react-icons/go";
+import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { GrMoney } from "react-icons/gr";
-import { GoHistory } from "react-icons/go";
+import { PiPackage } from "react-icons/pi";
 import { Link, Outlet, useLocation } from "react-router-dom";
 
 const DashboardLayout = () => {
@@ -47,7 +47,7 @@ const DashboardLayout = () => {
             />
             <NavItem
               to="/user/products"
-              icon={<GoBriefcase />}
+              icon={<HiOutlineShoppingBag />}
               text="Products"
               isCollapsed={isCollapsed}
               activeItem={activeItem}
@@ -63,8 +63,8 @@ const DashboardLayout = () => {
             />
             <NavItem
               to="/user/order-history"
-              icon={<GoHistory />}
-              text="Order History"
+              icon={<PiPackage />}
+              text="Order Items"
               isCollapsed={isCollapsed}
               activeItem={activeItem}
               setActiveItem={setActiveItem}
