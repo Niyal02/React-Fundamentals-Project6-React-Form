@@ -27,7 +27,7 @@ function App() {
             <Route path="/404-Page-not-found" element={<ErrorPage />} />
           </Route>
           <Route path="/user" element={<DashboardLayout />}>
-            <Route element={<PrivateRoute />}>
+            <Route element={<PublicRoute />}>
               <Route path="/user/dashboard" element={<Dashboard />} />
               <Route path="/user/category" element={<Category />} />
               <Route path="/user/products" element={<Products />} />
