@@ -7,7 +7,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import instance from "../../axios/axios";
 import { useState } from "react";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 
 interface Category {
   uuid: string;
@@ -55,16 +55,36 @@ const uploadImage = async (file: File): Promise<string> => {
       throw new Error("No authentication token found.");
     }
 
-    const formData = new FormData();
-    formData.append("image", file);
+    // 1. Generate upload url -> cloudinary upload url
+    const response = await instance.post(
+      "/files/generate-upload-url",
+      undefined,
+      {
+        headers: {
+          // "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const cloudinaryUrl = response.data?.uploadUrl;
 
-    const response = await instance.post("/upload", formData, {
+    // 2. Cloudinary upload url -> send file in formdata
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "default");
+    const cloudinaryResponse = await axios.post(cloudinaryUrl, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
       },
     });
-    return response.data.url;
+    const imageUrl = cloudinaryResponse?.data?.secure_url;
+    console.log({ imageUrl });
+    // const response2 = axios.post("cloudinary-url", formdata);
+
+    // 3. Response -> image url -> use in preview
+    // response2.some_url -> image url
+
+    return imageUrl;
   } catch (error) {
     console.log("Failed to upload Image: ", error);
     throw error;
