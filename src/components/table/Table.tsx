@@ -20,11 +20,17 @@ import {
 type TableProps<T> = {
   data: T[];
   columns: ColumnDef<T>[];
-  globalFilter: string;
-  setGlobalFilter: React.Dispatch<React.SetStateAction<string>>;
-  sorting: ColumnSort[];
-  setSorting: React.Dispatch<React.SetStateAction<ColumnSort[]>>;
+  globalFilter?: string;
+  setGlobalFilter?: React.Dispatch<React.SetStateAction<string>>;
+  sorting?: ColumnSort[];
+  setSorting?: React.Dispatch<React.SetStateAction<ColumnSort[]>>;
   isLoading: boolean;
+  pagination: {
+    pageIndex: number;
+    pageSize: number;
+    canNextPage: boolean;
+    canPreviousPage: boolean;
+  };
 };
 
 export default function Table<T>({
@@ -35,6 +41,7 @@ export default function Table<T>({
   sorting,
   setSorting,
   isLoading,
+  pagination,
 }: TableProps<T>) {
   const table = useReactTable({
     data,
@@ -44,9 +51,7 @@ export default function Table<T>({
       globalFilter,
     },
     initialState: {
-      pagination: {
-        pageSize: 5,
-      },
+      pagination,
     },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -61,7 +66,7 @@ export default function Table<T>({
       <div className="mb-4 relative">
         <input
           value={globalFilter ?? ""}
-          onChange={(e) => setGlobalFilter(e.target.value || "")}
+          onChange={(e) => setGlobalFilter?.(e.target.value || "")}
           placeholder="Search..."
           className="w-full pl-10 pr-4 py-2 border border-gray-400 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
         />

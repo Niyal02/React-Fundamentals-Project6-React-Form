@@ -6,6 +6,8 @@ import {
 } from "@headlessui/react";
 import { useQuery } from "@tanstack/react-query";
 import instance from "../../axios/axios";
+import { useState } from "react";
+import { AxiosError } from "axios";
 
 interface Category {
   uuid: string;
@@ -19,6 +21,8 @@ interface AddProductDialogProps {
   onProductNameChange: (name: string) => void;
   newProductPrice: string;
   onProductPriceChange: (price: string) => void;
+  newProductImage: string;
+  onProductImageChange: (image: string) => void;
   newProductCategory: string;
   onProductCategoryChange: (category: string) => void;
   onSubmit: () => Promise<void>;
@@ -44,6 +48,29 @@ const fetchCategories = async (): Promise<Category[]> => {
   }
 };
 
+const uploadImage = async (file: File): Promise<string> => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      throw new Error("No authentication token found.");
+    }
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    const response = await instance.post("/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.url;
+  } catch (error) {
+    console.log("Failed to upload Image: ", error);
+    throw error;
+  }
+};
+
 const AddProductDialogCmp = ({
   isOpen,
   onClose,
@@ -51,6 +78,8 @@ const AddProductDialogCmp = ({
   onProductNameChange,
   newProductPrice,
   onProductPriceChange,
+  newProductImage,
+  onProductImageChange,
   newProductCategory,
   onProductCategoryChange,
   onSubmit,
@@ -61,6 +90,34 @@ const AddProductDialogCmp = ({
     queryKey: ["categories"],
     queryFn: fetchCategories,
   });
+
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setUploadError("Please upload an image file");
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadError("");
+    try {
+      const imageUrl = await uploadImage(file);
+      onProductImageChange(imageUrl);
+    } catch (err) {
+      console.log("Failed to upload image", err);
+      if (err instanceof AxiosError) {
+        setUploadError("Failed to upload image");
+      }
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
@@ -106,6 +163,47 @@ const AddProductDialogCmp = ({
                 min="0"
                 step="0.01"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Product Image
+              </label>
+              <div className="flex items-center gap-2 ">
+                <label className=" cursor-pointer">
+                  <span className="px-2 py-1.6 bg-gray-100 rounded-md hover:bg-gray-200 ">
+                    {isUploading ? "Uploading" : "Choose File"}
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    // placeholder="Paste an image URL. Example: https://example.com/image.jpg"
+                    className="hidden"
+                    disabled={isUploading}
+                  />
+                </label>
+                {newProductImage && !isUploading && (
+                  <span className="">Image Selected</span>
+                )}
+              </div>
+
+              {uploadError && (
+                <p className="mt-1 text-sm text-red-600">{uploadError}</p>
+              )}
+              {newProductImage && (
+                <div className="mt-2">
+                  <p className="text-sm text-gray-500 mb-1">Image Preview</p>
+                  <img
+                    src={newProductImage}
+                    alt="Preview"
+                    className="h-20 w-20 object-cover rounded-md border border-gray-200"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                </div>
+              )}
             </div>
 
             <div>

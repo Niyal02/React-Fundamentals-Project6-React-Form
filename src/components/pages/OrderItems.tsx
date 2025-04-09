@@ -154,6 +154,12 @@ export default function OrderItems() {
         setGlobalFilter={setGlobalFilter}
         sorting={sorting}
         setSorting={setSorting}
+        pagination={{
+          pageIndex: 0,
+          pageSize: 5,
+          canNextPage: true,
+          canPreviousPage: true,
+        }}
       />
     </div>
   );

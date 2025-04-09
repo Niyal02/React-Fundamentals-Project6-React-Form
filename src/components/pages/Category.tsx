@@ -202,6 +202,12 @@ export default function Category() {
         sorting={sorting}
         setSorting={setSorting}
         isLoading={isInitialLoading}
+        pagination={{
+          pageIndex: 0,
+          pageSize: 5,
+          canNextPage: true,
+          canPreviousPage: true,
+        }}
       />
     </div>
   );

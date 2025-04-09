@@ -13,7 +13,7 @@ import Image from "../image/Image";
 type Product = {
   uuid: string;
   name: string;
-  Image: string;
+  imageUrl: string;
   price: number;
   category: {
     uuid: string;
@@ -29,7 +29,7 @@ const columns = [
     header: () => <span className="flex items-center">S.N.</span>,
     cell: ({ row }) => row.index + 1,
   }),
-  columnHelper.accessor("Image", {
+  columnHelper.accessor("imageUrl", {
     cell: (info) => (
       <Image src={info.getValue()} alt={info.row.original.name} size="md" />
     ),
@@ -73,6 +73,7 @@ export default function Products() {
   const [isOpen, setIsOpen] = useState(false);
   const [newProductName, setNewProductName] = useState("");
   const [newProductPrice, setNewProductPrice] = useState("");
+  const [newProductImage, setNewProductImage] = useState("");
   const [newProductCategory, setNewProductCategory] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -127,6 +128,7 @@ export default function Products() {
         {
           name: newProductName,
           price: parseFloat(newProductPrice),
+          imageUrl: newProductImage,
           category: newProductCategory,
         },
         {
@@ -141,6 +143,9 @@ export default function Products() {
         queryKey: ["products"],
       });
       setNewProductName("");
+      setNewProductPrice("");
+      setNewProductImage("");
+      setNewProductCategory("");
       setIsOpen(false);
     } catch (err) {
       console.log("Failed to create product", err);
@@ -164,8 +169,7 @@ export default function Products() {
           Add Product
         </button>
       </div>
-
-      {/* Add Category Dialog */}
+      {/* Add Product Dialog */}
       <AddProductDialogCmp
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
@@ -173,6 +177,8 @@ export default function Products() {
         onProductNameChange={setNewProductName}
         newProductPrice={newProductPrice}
         onProductPriceChange={setNewProductPrice}
+        newProductImage={newProductImage}
+        onProductImageChange={setNewProductImage}
         newProductCategory={newProductCategory}
         onProductCategoryChange={setNewProductCategory}
         onSubmit={handleAddProduct}
@@ -180,22 +186,12 @@ export default function Products() {
         error={error}
       />
 
+      <param name="tes" value="" />
       {/* Table Component */}
       <Table<Product>
         columns={columns}
         data={data}
         isLoading={isInitialLoading}
-        pagination={{
-          pageIndex: 0,
-          pageSize: 5,
-          canNextPage: true,
-          canPreviousPage: true,
-        }}
-        onPageChange={(page: number) => console.log("Page Change:", page)}
-        onPageSizeChange={(pageSize: number) =>
-          console.log("Page Size Change:", pageSize)
-        }
-        onSortChange={(sort: unknown) => console.log("Sort Change:", sort)}
       />
     </div>
   );
