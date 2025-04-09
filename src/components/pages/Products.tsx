@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AxiosError } from "axios";
 import DeleteButton from "../button/categoryButton/DeleteButton";
 import instance from "../../axios/axios";
+import EditButton from "../button/categoryButton/EditButton";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import AddProductDialogCmp from "../small components/AddProductDialogCmp";
 import Table from "../table/Table";
