@@ -4,11 +4,11 @@ import { useState } from "react";
 import { AxiosError } from "axios";
 import DeleteButton from "../button/categoryButton/DeleteButton";
 import instance from "../../axios/axios";
-import EditButton from "../button/categoryButton/EditButton";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import AddProductDialogCmp from "../small components/AddProductDialogCmp";
 import Table from "../table/Table";
 import Image from "../image/Image";
+import ProEditButton from "../button/productButton/ProEditButton";
 
 type Product = {
   uuid: string;
@@ -60,7 +60,7 @@ const columns = [
 
       return (
         <div className="flex items-center gap-3">
-          <EditButton itemId={itemId} itemName={itemName} />
+          <ProEditButton itemId={itemId} itemName={itemName} />
 
           <DeleteButton itemId={itemId} itemName={itemName} />
         </div>
@@ -192,12 +192,6 @@ export default function Products() {
         columns={columns}
         data={data}
         isLoading={isInitialLoading}
-        pagination={{
-          pageIndex: 0,
-          pageSize: 5,
-          canNextPage: true,
-          canPreviousPage: true,
-        }}
       />
     </div>
   );
