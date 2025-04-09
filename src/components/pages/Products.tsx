@@ -192,12 +192,6 @@ export default function Products() {
         columns={columns}
         data={data}
         isLoading={isInitialLoading}
-        pagination={{
-          pageIndex: 0,
-          pageSize: 5,
-          canNextPage: true,
-          canPreviousPage: true,
-        }}
       />
     </div>
   );
