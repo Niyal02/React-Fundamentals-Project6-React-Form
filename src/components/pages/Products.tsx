@@ -66,7 +66,7 @@ const columns = [
             itemPrice={row.original.price}
             itemImage={row.original.imageUrl}
             itemCategory={row.original.category.uuid}
-            categories={categories} //  fetch
+            categories={categories} //  fetch cat here
           />
 
           <ProDeleteButton itemId={itemId} itemName={itemName} />
