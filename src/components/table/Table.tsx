@@ -25,6 +25,7 @@ type TableProps<T> = {
   sorting?: ColumnSort[];
   setSorting?: React.Dispatch<React.SetStateAction<ColumnSort[]>>;
   isLoading: boolean;
+  categories?: Array<{ uuid: string; name: string }>;
   pagination: {
     pageIndex: number;
     pageSize: number;

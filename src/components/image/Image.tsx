@@ -4,7 +4,7 @@ type ImageProps = {
   src?: string;
   alt?: string;
   className?: string;
-  size?: "sm" | "md" | "lg"; // Optional size prop
+  size?: "sm" | "md" | "lg";
 };
 
 const Image = ({
@@ -15,7 +15,7 @@ const Image = ({
 }: ImageProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  // Size classes
+  // Size classes for thumbnails
   const sizeClasses = {
     sm: "w-8 h-8",
     md: "w-10 h-10",
@@ -39,14 +39,18 @@ const Image = ({
         )}
       </div>
 
-      {/* Hover Preview */}
+      {/* Hover Preview - positioned below thumbnail i guess */}
       {isHovered && src && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70 p-4">
-          <div className="max-w-[600px] max-h-[600px] border-2 border-white rounded-lg overflow-hidden">
+        <div
+          className="absolute left-0 z-50 mt-1 bg-white p-1 shadow-lg rounded-md border border-gray-200 w-64 h-64"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <div className="w-full h-full flex items-center justify-center overflow-hidden">
             <img
               src={src}
               alt={`Preview: ${alt}`}
-              className="w-full h-full object-contain"
+              className="max-w-full max-h-full object-contain"
             />
           </div>
         </div>

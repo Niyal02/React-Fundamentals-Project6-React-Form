@@ -223,6 +223,7 @@ export default function Products() {
         columns={columns}
         data={data}
         isLoading={isInitialLoading}
+        categories={categories}
         pagination={{
           pageIndex: 0,
           pageSize: 5,
