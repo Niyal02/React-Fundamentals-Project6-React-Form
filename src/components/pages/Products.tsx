@@ -2,14 +2,13 @@ import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { AxiosError } from "axios";
-import DeleteButton from "../button/categoryButton/DeleteButton";
 import instance from "../../axios/axios";
-import EditButton from "../button/categoryButton/EditButton";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import AddProductDialogCmp from "../small components/AddProductDialogCmp";
 import Table from "../table/Table";
 import Image from "../image/Image";
 import ProEditButton from "../button/productButton/ProEditButton";
+import ProDeleteButton from "../button/productButton/ProDeleteButton";
 
 type Product = {
   uuid: string;
@@ -61,9 +60,16 @@ const columns = [
 
       return (
         <div className="flex items-center gap-3">
-          <ProEditButton itemId={itemId} itemName={itemName} />
+          <ProEditButton
+            itemId={itemId}
+            itemName={itemName}
+            itemPrice={row.original.price}
+            itemImage={row.original.imageUrl}
+            itemCategory={row.original.category.uuid}
+            categories={categories} //  fetch this or pass it down
+          />
 
-          <DeleteButton itemId={itemId} itemName={itemName} />
+          <ProDeleteButton itemId={itemId} itemName={itemName} />
         </div>
       );
     },
@@ -78,6 +84,29 @@ export default function Products() {
   const [newProductCategory, setNewProductCategory] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  {
+    /* Fetching categories */
+  }
+
+  const fetchCategories = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      if (!token) throw new Error("No token found");
+      const response = await instance.get("/categories", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data.categories;
+    } catch (error) {
+      console.error("Failed to fetch categories", error);
+      throw error;
+    }
+  };
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+  });
 
   {
     /* Fetching Products */
@@ -187,12 +216,17 @@ export default function Products() {
         error={error}
       />
 
-      <param name="tes" value="" />
       {/* Table Component */}
       <Table<Product>
         columns={columns}
         data={data}
         isLoading={isInitialLoading}
+        pagination={{
+          pageIndex: 0,
+          pageSize: 5,
+          canNextPage: true,
+          canPreviousPage: true,
+        }}
       />
     </div>
   );

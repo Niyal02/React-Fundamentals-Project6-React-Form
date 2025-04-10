@@ -9,29 +9,123 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import instance from "../../../axios/axios";
 import { useQueryClient } from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
+import Image from "../../image/Image";
 
 interface ProEditButtonProps {
   itemId: string;
   itemName: string;
+  itemImage: string;
+  itemPrice: number;
+  itemCategory: string;
+  categories: Array<{
+    uuid: string;
+    name: string;
+  }>;
   onEditSuccess?: () => void;
 }
 
 const ProEditButton = ({
   itemId,
   itemName,
+  itemImage,
+  itemPrice,
+  itemCategory,
+  categories,
   onEditSuccess,
 }: ProEditButtonProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [editedName, setEditedName] = useState(itemName);
+  const [editedImage, setEditedImage] = useState(itemImage);
+  const [editedPrice, setEditedPrice] = useState(itemPrice.toString());
+  const [editedCategory, setEditedCategory] = useState(itemCategory);
+  const [isUploading, setIsUploading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const queryClient = useQueryClient();
+
+  const uploadImage = async (file: File): Promise<string> => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        throw new Error("No authentication token found.");
+      }
+
+      const response = await instance.post(
+        "/files/generate-upload-url",
+        undefined,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const cloudinaryUrl = response.data?.uploadUrl;
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "default");
+      const cloudinaryResponse = await axios.post(cloudinaryUrl, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      const imageUrl = cloudinaryResponse?.data?.secure_url;
+      console.log({ imageUrl });
+
+      return imageUrl;
+    } catch (error) {
+      console.log("Failed to upload Image: ", error);
+      throw error;
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setError("Please upload an image file");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Image size must be less than 5MB");
+      return;
+    }
+
+    setIsUploading(true);
+    setError("");
+
+    try {
+      const imageUrl = await uploadImage(file);
+      setEditedImage(imageUrl);
+    } catch (err) {
+      console.log("Failed to upload image", err);
+      if (err instanceof AxiosError) {
+        setError("Failed to upload image");
+      }
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleEdit = async () => {
     if (!editedName.trim()) {
       setError(` ${itemName} Name cannot be empty. Please enter a valid name.`);
       return;
     }
+
+    if (!editedPrice || isNaN(parseFloat(editedPrice))) {
+      setError("Please enter a vaild price");
+    }
+
+    if (!editedCategory) {
+      setError("Please select a category");
+      return;
+    }
+
     setIsLoading(true);
     setError("");
 
@@ -43,7 +137,12 @@ const ProEditButton = ({
 
       await instance.patch(
         `/products/${itemId}`,
-        { name: editedName },
+        {
+          name: editedName,
+          price: parseFloat(editedPrice),
+          imageUrl: editedImage,
+          categories: editedCategory,
+        },
 
         {
           headers: {
@@ -57,7 +156,7 @@ const ProEditButton = ({
         queryKey: ["products"],
       });
 
-      toast.success("Category updated successfully!", {
+      toast.success("Product updated successfully!", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -130,20 +229,91 @@ const ProEditButton = ({
               Update the name for the product
             </Description>
 
-            <div className="mt-4">
-              <input
-                type="text"
-                value={editedName}
-                onChange={(e) => {
-                  setEditedName(e.target.value);
-                  setError("");
-                }}
-                placeholder="Category name"
-                className={`w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
-                  error ? "border-red-500" : "border-gray-300"
-                }`}
-                autoFocus
-              />
+            <div className="mt-4 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Product Name
+                </label>
+                <input
+                  type="text"
+                  value={editedName}
+                  onChange={(e) => {
+                    setEditedName(e.target.value);
+                    setError("");
+                  }}
+                  placeholder="Product name"
+                  className={`w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
+                    error ? "border-red-500" : "border-gray-300"
+                  }`}
+                  autoFocus
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Price
+                </label>
+                <input
+                  type="number"
+                  value={editedPrice}
+                  onChange={(e) => {
+                    setEditedName(e.target.value);
+                    setError("");
+                  }}
+                  placeholder="Product price"
+                  className={`w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
+                    error ? "border-red-500" : "border-gray-300"
+                  }`}
+                  autoFocus
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Image
+                </label>
+                <div className="flex items-center gap-4">
+                  {editedImage && (
+                    <Image src={editedImage} alt="Product preview" size="sm" />
+                  )}
+                  <label className="cursor-pointer">
+                    <span className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200">
+                      {isUploading ? "Uploading..." : "Change Image"}
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="hidden"
+                      disabled={isUploading}
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Category
+                </label>
+                <select
+                  value={editedCategory}
+                  onChange={(e) => {
+                    setEditedCategory(e.target.value);
+                    setError("");
+                  }}
+                  className={`w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
+                    error ? "border-red-500" : "border-gray-300"
+                  }`}
+                >
+                  <option value="">Select a category</option>
+                  {categories.map((category) => (
+                    <option key={category.uuid} value={category.uuid}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
             </div>
 
@@ -153,6 +323,9 @@ const ProEditButton = ({
                   setIsOpen(false);
                   setError("");
                   setEditedName(itemName);
+                  setEditedPrice(itemPrice.toString());
+                  setEditedImage(itemImage);
+                  setEditedCategory(itemCategory);
                 }}
                 disabled={isLoading}
                 className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50"
@@ -162,7 +335,15 @@ const ProEditButton = ({
               <button
                 onClick={handleEdit}
                 disabled={
-                  !editedName.trim() || isLoading || editedName === itemName
+                  isLoading ||
+                  isUploading ||
+                  !editedName.trim() ||
+                  !editedPrice ||
+                  !editedCategory ||
+                  (editedName === itemName &&
+                    editedPrice === itemPrice.toString() &&
+                    editedImage === itemImage &&
+                    editedCategory === itemCategory)
                 }
                 className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
