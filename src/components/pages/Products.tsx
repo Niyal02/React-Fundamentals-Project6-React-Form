@@ -66,7 +66,7 @@ const columns = [
             itemPrice={row.original.price}
             itemImage={row.original.imageUrl}
             itemCategory={row.original.category.uuid}
-            categories={categories} //  fetch this or pass it down
+            categories={categories} //  fetch
           />
 
           <ProDeleteButton itemId={itemId} itemName={itemName} />
@@ -89,14 +89,16 @@ export default function Products() {
     /* Fetching categories */
   }
 
-  const fetchCategories = async () => {
+  const fetchCategories = async (): Promise<
+    Array<{ uuid: string; name: string }>
+  > => {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) throw new Error("No token found");
       const response = await instance.get("/categories", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      return response.data.categories;
+      return response.data.categories || [];
     } catch (error) {
       console.error("Failed to fetch categories", error);
       throw error;
