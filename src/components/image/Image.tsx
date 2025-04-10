@@ -39,10 +39,16 @@ const Image = ({
         )}
       </div>
 
-      {/* Hover Preview - positioned below thumbnail i guess */}
+      {/* Hover Preview - positioned below thumbnail */}
       {isHovered && src && (
         <div
-          className="absolute left-0 z-50 mt-1 bg-white p-1 shadow-lg rounded-md border border-gray-200 w-64 h-64"
+          className="absolute left-0 z-50 mt-1 bg-white p-1 shadow-lg rounded-md border border-gray-200"
+          style={{
+            width: "8cm",
+            height: "8cm",
+            minWidth: "8cm", // Ensures it doesn't shrink
+            minHeight: "8cm", // Ensures it doesn't shrink
+          }}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
