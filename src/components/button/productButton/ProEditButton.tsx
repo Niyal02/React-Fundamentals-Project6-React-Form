@@ -117,6 +117,7 @@ const ProEditButton = ({
 
     if (!editedPrice || isNaN(parseFloat(editedPrice))) {
       setError("Please enter a vaild price");
+      return;
     }
 
     if (!editedCategory) {
@@ -139,7 +140,7 @@ const ProEditButton = ({
           name: editedName,
           price: parseFloat(editedPrice),
           imageUrl: editedImage,
-          categories: editedCategory,
+          category: editedCategory,
         },
 
         {
