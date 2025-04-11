@@ -9,6 +9,7 @@ import Table from "../table/Table";
 import Image from "../image/Image";
 import ProEditButton from "../button/productButton/ProEditButton";
 import ProDeleteButton from "../button/productButton/ProDeleteButton";
+import { useCategories } from "../../hooks/use-categories";
 
 type Product = {
   uuid: string;
@@ -66,7 +67,6 @@ const columns = [
             itemPrice={row.original.price}
             itemImage={row.original.imageUrl}
             itemCategory={row.original.category.uuid}
-            categories={categories} //  fetch cat here
           />
 
           <ProDeleteButton itemId={itemId} itemName={itemName} />
@@ -89,26 +89,7 @@ export default function Products() {
     /* Fetching categories */
   }
 
-  const fetchCategories = async (): Promise<
-    Array<{ uuid: string; name: string }>
-  > => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      if (!token) throw new Error("No token found");
-      const response = await instance.get("/categories", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      return response.data.categories || [];
-    } catch (error) {
-      console.error("Failed to fetch categories", error);
-      throw error;
-    }
-  };
-
-  const { data: categories = [] } = useQuery({
-    queryKey: ["categories"],
-    queryFn: fetchCategories,
-  });
+  const { categories } = useCategories();
 
   {
     /* Fetching Products */

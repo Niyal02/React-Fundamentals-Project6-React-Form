@@ -11,6 +11,7 @@ import instance from "../../../axios/axios";
 import { useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import Image from "../../image/Image";
+import { useCategories } from "../../../hooks/use-categories";
 
 interface ProEditButtonProps {
   itemId: string;
@@ -18,10 +19,6 @@ interface ProEditButtonProps {
   itemImage: string;
   itemPrice: number;
   itemCategory: string;
-  categories: Array<{
-    uuid: string;
-    name: string;
-  }>;
   onEditSuccess?: () => void;
 }
 
@@ -31,7 +28,6 @@ const ProEditButton = ({
   itemImage,
   itemPrice,
   itemCategory,
-  categories,
   onEditSuccess,
 }: ProEditButtonProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,6 +39,8 @@ const ProEditButton = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const queryClient = useQueryClient();
+
+  const { categories } = useCategories();
 
   const uploadImage = async (file: File): Promise<string> => {
     try {
@@ -257,7 +255,7 @@ const ProEditButton = ({
                   type="number"
                   value={editedPrice}
                   onChange={(e) => {
-                    setEditedName(e.target.value);
+                    setEditedPrice(e.target.value);
                     setError("");
                   }}
                   placeholder="Product price"
