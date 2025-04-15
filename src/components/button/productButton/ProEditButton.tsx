@@ -121,6 +121,7 @@ const ProEditButton = ({
     setError("");
 
     try {
+      // aixos interceptor used
       await instance.patch(`/products/${itemId}`, {
         name: editedName,
         price: parseFloat(editedPrice),
@@ -269,7 +270,7 @@ const ProEditButton = ({
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Category
+                  Categories
                 </label>
                 <select
                   value={editedCategory}

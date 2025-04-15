@@ -39,6 +39,7 @@ const LoginForm: React.FC = () => {
     setError("");
 
     try {
+      // aixos interceptor used
       const response = await axios.post<{
         accessToken: string;
       }>("auth/login", values);

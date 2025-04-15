@@ -127,6 +127,7 @@ export default function Products() {
     setError("");
 
     try {
+      // aixos interceptor used
       await instance.post("/products", {
         name: newProductName,
         price: parseFloat(newProductPrice),
