@@ -44,25 +44,16 @@ const ProEditButton = ({
 
   const uploadImage = async (file: File): Promise<string> => {
     try {
-      const token = localStorage.getItem("accessToken");
-      if (!token) {
-        throw new Error("No authentication token found.");
-      }
+      setIsUploading(true);
+      setError("");
 
-      const response = await instance.post(
-        "/files/generate-upload-url",
-        undefined,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await instance.post("/files/generate-upload-url");
       const cloudinaryUrl = response.data?.uploadUrl;
 
       const formData = new FormData();
       formData.append("file", file);
       formData.append("upload_preset", "default");
+
       const cloudinaryResponse = await axios.post(cloudinaryUrl, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -70,11 +61,12 @@ const ProEditButton = ({
       });
       const imageUrl = cloudinaryResponse?.data?.secure_url;
       console.log({ imageUrl });
-
       return imageUrl;
     } catch (error) {
       console.log("Failed to upload Image: ", error);
       throw error;
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -129,27 +121,12 @@ const ProEditButton = ({
     setError("");
 
     try {
-      const token = localStorage.getItem("accessToken");
-      if (!token) {
-        throw new Error("Authentication token not found");
-      }
-
-      await instance.patch(
-        `/products/${itemId}`,
-        {
-          name: editedName,
-          price: parseFloat(editedPrice),
-          imageUrl: editedImage,
-          category: editedCategory,
-        },
-
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await instance.patch(`/products/${itemId}`, {
+        name: editedName,
+        price: parseFloat(editedPrice),
+        imageUrl: editedImage,
+        category: editedCategory,
+      });
 
       queryClient.invalidateQueries({
         queryKey: ["products"],
