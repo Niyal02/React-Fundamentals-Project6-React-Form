@@ -2,6 +2,9 @@ import axios from "axios";
 
 const instance = axios.create({
   baseURL: "https://628c-202-166-220-144.ngrok-free.app/",
+  headers: {
+    "ngrok-skip-browser-warning": "69420",
+  },
 });
 
 // for request interceptor
@@ -16,7 +19,12 @@ instance.interceptors.request.use((config) => {
 
 //for response
 instance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (response.config.url?.includes("/") && response.data.accessToken) {
+      localStorage.setItem("accessToken", response.data.accessToken);
+    }
+    return response;
+  },
   (error) => {
     if (error.response?.status === 401) {
       console.log("401 error");

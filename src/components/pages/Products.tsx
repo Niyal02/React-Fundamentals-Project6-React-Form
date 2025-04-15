@@ -16,7 +16,7 @@ type Product = {
   name: string;
   imageUrl: string;
   price: number;
-  category: {
+  category?: {
     uuid: string;
     name: string;
   };
@@ -49,7 +49,7 @@ const columns = [
     header: () => <span className="flex items-center"> Price</span>,
   }),
   columnHelper.accessor("category", {
-    cell: (info) => info.getValue().name,
+    cell: (info) => info.getValue()?.name || "No Category",
     header: () => <span className="flex items-center">Category</span>,
   }),
   columnHelper.display({
@@ -66,7 +66,7 @@ const columns = [
             itemName={itemName}
             itemPrice={row.original.price}
             itemImage={row.original.imageUrl}
-            itemCategory={row.original.category.uuid}
+            itemCategory={row.original.category?.uuid || ""}
           />
 
           <ProDeleteButton itemId={itemId} itemName={itemName} />
@@ -96,15 +96,7 @@ export default function Products() {
   }
   const fetchProducts = async () => {
     try {
-      const token = localStorage.getItem("accessToken");
-      if (!token) {
-        throw new Error("No Authentication token found for fetching products.");
-      }
-      const response = await instance.get("/products", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await instance.get("/products");
       return response.data;
     } catch (error) {
       console.log("Failed to fetch products", error);
@@ -127,30 +119,20 @@ export default function Products() {
       setError("Product name cannot be empty");
       return;
     }
+    if (!newProductCategory) {
+      setError("Please select a category");
+      return;
+    }
     setIsLoading(true);
     setError("");
 
     try {
-      const token = localStorage.getItem("accessToken");
-      if (!token) {
-        throw new Error("Authorization token not found");
-      }
-
-      await instance.post(
-        "/products",
-        {
-          name: newProductName,
-          price: parseFloat(newProductPrice),
-          imageUrl: newProductImage,
-          category: newProductCategory,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await instance.post("/products", {
+        name: newProductName,
+        price: parseFloat(newProductPrice),
+        imageUrl: newProductImage,
+        category: newProductCategory,
+      });
 
       queryClient.invalidateQueries({
         queryKey: ["products"],

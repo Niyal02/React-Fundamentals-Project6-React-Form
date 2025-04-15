@@ -78,11 +78,7 @@ export default function Category() {
           "No Authentication token found for fetching categories."
         );
       }
-      const response = await instance.get("/categories", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await instance.get("/categories");
       return response.data.categories;
     } catch (error) {
       console.log("Failed to fetch categories", error);
