@@ -129,7 +129,7 @@ const HomePage = () => {
       {/* Footer */}
       <footer className="bg-white py-4 mt-8 flex justify-baseline">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-sm">
-          Copyright © 2025 | Privacy Policy
+          Copyright © 2025 | Privacy Polic
         </div>
       </footer>
     </div>
