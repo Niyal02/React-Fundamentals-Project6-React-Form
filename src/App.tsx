@@ -13,6 +13,7 @@ import { ToastContainer } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Dashboard from "./components/dashboard/Dashboard";
 import OrderItems from "./components/pages/OrderItems";
+import HomePage from "./components/homepage/Homepage";
 
 const queryClient = new QueryClient();
 
@@ -22,9 +23,13 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route element={<PublicRoute />}>
-            <Route path="/" element={<LoginForm />} />
+            <Route path="/homepage" element={<HomePage />} />
+            <Route path="/login" element={<LoginForm />} />
             <Route path="/register" element={<RegisterForm />} />
-            <Route path="/404-Page-not-found" element={<ErrorPage />} />
+            <Route
+              path="/forgot-password-404-Page-not-found"
+              element={<ErrorPage />}
+            />
           </Route>
           <Route path="/user" element={<DashboardLayout />}>
             <Route element={<PrivateRoute />}>

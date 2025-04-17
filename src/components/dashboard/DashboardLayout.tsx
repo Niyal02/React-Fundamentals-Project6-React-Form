@@ -16,7 +16,7 @@ const DashboardLayout = () => {
   return (
     <div className=" flex h-screen">
       <div
-        className={`bg-amber-600 h-screen p-4 flex flex-col text-white transition-all duration-400 fixed ${
+        className={`bg-amber-800 h-screen p-4 flex flex-col text-white transition-all duration-400 fixed ${
           isCollapsed ? "w-16" : "w-56"
         }`}
       >

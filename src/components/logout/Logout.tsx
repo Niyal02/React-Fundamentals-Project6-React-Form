@@ -6,7 +6,7 @@ const Logout = () => {
   const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
-    navigate("/");
+    navigate("/homepage");
   };
 
   return (

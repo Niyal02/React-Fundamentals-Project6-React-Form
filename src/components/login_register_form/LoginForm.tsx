@@ -42,8 +42,12 @@ const LoginForm: React.FC = () => {
       // aixos interceptor used
       const response = await axios.post<{
         accessToken: string;
+        refreshToken: string;
       }>("auth/login", values);
       console.log("Login Successful", response.data);
+
+      //store token
+      localStorage.setItem("accessToken", response.data.accessToken);
 
       //After successful login , the token wil be stored
       navigate("/user/dashboard");
@@ -68,7 +72,7 @@ const LoginForm: React.FC = () => {
         <div className="flex flex-col p-8 justify-center items-center md:w-1/2">
           <div className="mb-6 text-center">
             <span className="flex items-center justify-center text-3xl font-bold gap-2 mb-6">
-              <span className="text-orange-500"> 🧑‍💻 Rex IT Solutions</span>
+              <span className="text-amber-700"> 🧑‍💻 Rex IT Solutions</span>
             </span>
             <p className="text-2xl mb-4">Sign in to your account</p>
           </div>
@@ -100,7 +104,7 @@ const LoginForm: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="mt-2 disabled:bg-amber-600 w-full rounded-md border p-1.5 bg-amber-600 text-white hover:bg-amber-500 cursor-pointer shadow-md transition"
+                  className="mt-2 disabled:bg-amber-600 w-full rounded-md border p-1.5 bg-amber-700 text-white hover:bg-amber-600 cursor-pointer shadow-md transition"
                 >
                   {isSubmitting ? (
                     <Loader2Icon className="animate-spin ml-48" />
@@ -115,7 +119,7 @@ const LoginForm: React.FC = () => {
           <div className="text-center mt-2.5">
             <a
               className="w-full text-gray-400 cursor-pointer"
-              onClick={() => navigate("/404-Page-not-found")}
+              onClick={() => navigate("/forgot-password-404-Page-not-found")}
             >
               Forgot Password?
             </a>
