@@ -28,41 +28,38 @@ const HomePage = () => {
   });
 
   const accessToken = localStorage.getItem("accessToken");
-  const userName = localStorage.getItem("userName");
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userName");
+  const handleLogin = () => {
     navigate("/login");
   };
 
   return (
     <div className="min-h-screen bg-[#dad5cb]">
-      {/* Navigation Bar */}
+      {/* Navbar */}
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
-            {/* Company Logo - Aligned to left */}
+            {/* Logo */}
             <div className="flex items-center">
-              <Link to="/homepage" className="flex-shrink-0 flex items-center">
-                <span className="text-3xl font-bold gap-2">
-                  <span className="text-orange-500 size-2">
+              <Link to="/home" className="flex-shrink-0 flex items-center">
+                <span className="text-2xl font-bold gap-2">
+                  <span className="text-orange-700 size-2">
                     🧑‍💻 Rex IT Solutions
                   </span>
                 </span>
               </Link>
             </div>
 
-            {/* Right Side Navigation */}
+            {/*  Login and user name display here*/}
             <div className="flex items-center">
               {accessToken ? (
                 <div className="flex items-center space-x-4">
-                  <span className="text-gray-700">{userName}</span>
+                  {/* <span className="text-gray-700">{userName}</span> */}
                   <button
-                    onClick={handleLogout}
+                    onClick={handleLogin}
                     className="px-3 py-1 rounded-md text-sm font-medium text-white bg-orange-600 hover:bg-orange-700"
                   >
-                    Logout
+                    Login
                   </button>
                 </div>
               ) : (
@@ -95,7 +92,7 @@ const HomePage = () => {
         </div>
       </nav>
 
-      {/* Main Content - Shifted left */}
+      {/* Main Content  */}
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 pl-8">
         {/* Product Grid */}
         {isLoading ? (

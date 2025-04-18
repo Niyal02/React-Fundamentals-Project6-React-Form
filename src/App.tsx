@@ -23,7 +23,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route element={<PublicRoute />}>
-            <Route path="/homepage" element={<HomePage />} />
+            <Route path="/home" element={<HomePage />} />
             <Route path="/login" element={<LoginForm />} />
             <Route path="/register" element={<RegisterForm />} />
             <Route
