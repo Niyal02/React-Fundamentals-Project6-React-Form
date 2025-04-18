@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
-import axios from "../../axios/axios";
+import instance from "../../axios/axios";
 
 type Category = {
   id: number;
@@ -19,7 +19,7 @@ const ProductSidebar = ({
   const { data: categories = [], isLoading } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const res = await axios.get("/categories/all");
+      const res = await instance.get("/categories");
       return res.data;
     },
   });

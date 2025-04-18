@@ -1,11 +1,13 @@
-import { useState } from "react";
+// this is homepage containing search, sidebar only (no categories fetching api rn)
+
 import { useQuery } from "@tanstack/react-query";
-import { FiShoppingCart } from "react-icons/fi";
-import axios from "../../axios/axios";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { useState } from "react";
 import ProductCard from "../productCard/ProductCard";
-import ProductSidebar from "../productCard/ProductSidebar";
+import { FiShoppingCart } from "react-icons/fi";
+import { FaBars, FaTimes } from "react-icons/fa";
+import { motion } from "framer-motion";
+import instance from "../../axios/axios";
 
 type Product = {
   uuid: string;
@@ -16,169 +18,209 @@ type Product = {
 };
 
 const fetchProducts = async () => {
-  const response = await axios.get("/products/all");
-  return response.data;
+  try {
+    const response = await instance.get("/products/all");
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch products", error);
+    throw error;
+  }
 };
+
+// Mock Categories data for Sidebar
+const categories = ["Electronics", "Books", "Clothing", "Toys"];
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
   });
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-
   const accessToken = localStorage.getItem("accessToken");
-
-  const filteredProducts = products.filter((product: Product) => {
-    if (searchTerm) {
-      return product.name.toLowerCase().includes(searchTerm.toLowerCase());
-    }
-    if (selectedCategory) {
-      return product.category === selectedCategory;
-    }
-    return true;
-  });
 
   const handleLogin = () => {
     navigate("/login");
   };
 
+  // Filter products based on search term or selected category
+  const filteredProducts = searchTerm
+    ? products.filter((product: Product) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : selectedCategory
+    ? products.filter(
+        (product: Product) => product.category === selectedCategory
+      )
+    : products;
+
   return (
     <div className="flex min-h-screen bg-[#dad5cb]">
       {/* Sidebar */}
-      <ProductSidebar
-        onSelectCategory={(catName: string) => {
-          setSelectedCategory(catName);
-          setSearchTerm(""); // clear search if category selected
-        }}
-      />
+      <div
+        className={`bg-amber-800 h-screen p-4 flex flex-col text-white fixed transition-all duration-300 ${
+          isCollapsed ? "w-16" : "w-56"
+        }`}
+      >
+        <button
+          className="mb-4 ml-1.5 text-xl"
+          onClick={() => setIsCollapsed(!isCollapsed)}
+        >
+          {isCollapsed ? <FaBars /> : <FaTimes />}
+        </button>
+
+        <div className="flex flex-col gap-1">
+          {categories.map((category) => (
+            <div
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={`relative flex items-center mt-4 p-2 rounded cursor-pointer transition-all duration-300 ${
+                isCollapsed ? "justify-center" : "w-full"
+              } hover:bg-amber-700`}
+            >
+              <span
+                className={`${
+                  isCollapsed
+                    ? "opacity-0 absolute left-14 group-hover:opacity-100"
+                    : ""
+                }`}
+              >
+                {category}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* Main Content */}
       <div
-        className="flex-1 flex flex-col"
+        className={`flex-1 flex flex-col`}
         style={{
-          marginLeft: "14rem",
-          width: "calc(100% - 14rem)",
+          marginLeft: isCollapsed ? "4rem" : "14rem",
+          width: isCollapsed ? "calc(100% - 4rem)" : "calc(100% - 14rem)",
         }}
       >
         {/* Navbar */}
-        <nav className="bg-white shadow-sm px-4 py-2 flex justify-between items-center">
-          {/* Logo */}
-          <Link
-            to="/home"
-            className="text-2xl font-bold flex items-center gap-2"
-          >
-            <span className="text-orange-700">🧑‍💻 Rex IT Solutions</span>
-          </Link>
-
-          {/* Search and Login */}
-          <div className="flex items-center space-x-4">
-            {/* Search Field */}
-            <input
-              type="text"
-              placeholder="Search..."
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setSelectedCategory(""); // clear category if search typed
-              }}
-              className="border border-gray-300 rounded-md px-3 py-1 text-sm"
-            />
-
-            {/* Cart Icon */}
-            <div className="relative">
-              <FiShoppingCart className="text-2xl text-orange-700 cursor-pointer" />
-              {/* Add cart item count badge here if needed */}
+        <nav className="bg-white shadow-sm">
+          <div className="flex justify-between h-16 px-4 sm:px-6 lg:px-8 items-center">
+            {/* Logo */}
+            <div className="flex items-center">
+              <Link to="/home" className="flex items-center gap-2">
+                <span className="text-2xl font-bold text-orange-700">
+                  🧑‍💻 Rex IT Solutions
+                </span>
+              </Link>
             </div>
 
-            {/* Login */}
-            {accessToken ? (
-              <button
-                onClick={handleLogin}
-                className="px-3 py-1 rounded-md text-sm font-medium bg-orange-600 hover:bg-orange-700 text-white"
-              >
-                Login
-              </button>
-            ) : (
+            {/* Search + Cart + Login */}
+            <div className="flex items-center gap-4">
+              {/* Search field */}
+              <input
+                type="text"
+                placeholder="Search products..."
+                className="px-3 py-1 border rounded-md focus:outline-none focus:ring focus:border-orange-300"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+
+              {/* Cart Icon */}
               <Link
-                to="/login"
-                className="px-3 py-1 rounded-md text-sm font-medium text-white bg-orange-600 hover:bg-orange-700"
+                to="/cart"
+                className="text-2xl text-orange-700 hover:text-orange-800"
               >
-                Login
+                <FiShoppingCart />
               </Link>
-            )}
+
+              {/* Login */}
+              {accessToken ? (
+                <button
+                  onClick={handleLogin}
+                  className="px-3 py-1 rounded-md text-sm font-medium bg-orange-600 hover:bg-orange-700 text-white"
+                >
+                  Login
+                </button>
+              ) : (
+                <Link
+                  to="/login"
+                  className="px-3 py-1 rounded-md text-sm font-medium bg-orange-700 hover:bg-orange-600 text-white cursor-pointer"
+                >
+                  Login
+                </Link>
+              )}
+            </div>
           </div>
         </nav>
 
-        {/* Search Result Box */}
+        {/* Search Results */}
         {searchTerm && (
-          <div className="bg-white border border-gray-300 rounded-md p-4 m-4 max-h-96 overflow-y-auto">
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product: Product) => (
-                <div
-                  key={product.uuid}
-                  className="flex items-center gap-4 p-2 hover:bg-gray-100 rounded-md"
-                >
-                  <img
-                    src={product.imageUrl}
-                    alt={product.name}
-                    className="w-12 h-12 object-cover rounded-md"
-                  />
-                  <div>
-                    <h4 className="text-sm font-semibold">{product.name}</h4>
-                    <p className="text-xs text-orange-600">
-                      ${product.price.toFixed(2)}
-                    </p>
+          <div className="m-6 p-4 border border-gray-300 rounded bg-white">
+            <h2 className="text-lg font-semibold mb-4">Search Results</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {filteredProducts.length > 0 ? (
+                filteredProducts.map((product: Product) => (
+                  <div
+                    key={product.uuid}
+                    className="flex items-center gap-4 border p-2 rounded"
+                  >
+                    <img
+                      src={product.imageUrl}
+                      alt={product.name}
+                      className="w-16 h-16 object-cover rounded"
+                    />
+                    <div>
+                      <h3 className="text-sm font-medium">{product.name}</h3>
+                      <p className="text-orange-600 text-sm font-semibold">
+                        ${product.price.toFixed(2)}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))
-            ) : (
-              <p>No products found.</p>
-            )}
+                ))
+              ) : (
+                <p>No matching products found.</p>
+              )}
+            </div>
           </div>
         )}
 
-        {/* Products Grid */}
-        {!searchTerm && (
-          <main className="flex-1 mx-auto py-6 sm:px-6 lg:px-8 pl-8">
-            {isLoading ? (
-              <div className="flex justify-center items-center h-48">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
-              </div>
-            ) : (
-              <ProductCard>
-                {filteredProducts.map((product: Product) => (
-                  <motion.div
-                    key={product.uuid}
-                    whileHover={{ scale: 1.05 }}
-                    className="group bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-                  >
-                    <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200">
-                      <img
-                        src={product.imageUrl}
-                        alt={product.name}
-                        className="h-full w-full object-cover object-center group-hover:opacity-80 transition duration-300"
-                      />
-                    </div>
-                    <h3 className="mt-4 text-sm text-gray-700">
-                      {product.name}
-                    </h3>
-                    <p className="mt-1 text-lg font-medium text-orange-600">
-                      ${product.price.toFixed(2)}
-                    </p>
-                  </motion.div>
-                ))}
-              </ProductCard>
-            )}
-          </main>
-        )}
+        {/* Product Card component */}
+        <main className="flex-1 mx-auto py-6 sm:px-6 lg:px-8 pl-8">
+          {isLoading ? (
+            <div className="flex justify-center items-center h-48">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+            </div>
+          ) : (
+            <ProductCard>
+              {filteredProducts.map((product: Product) => (
+                <motion.div
+                  key={product.uuid}
+                  whileHover={{ scale: 1.05 }}
+                  className="group bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+                >
+                  <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
+                    <img
+                      src={product.imageUrl}
+                      alt={product.name}
+                      className="h-full w-full object-cover object-center group-hover:opacity-80 transition duration-300"
+                    />
+                  </div>
+                  <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
+                  <p className="mt-1 text-lg font-medium text-orange-600">
+                    ${product.price.toFixed(2)}
+                  </p>
+                </motion.div>
+              ))}
+            </ProductCard>
+          )}
+        </main>
 
         {/* Footer */}
-        <footer className="bg-[#c7bead] py-4 mt-8 text-center text-black text-sm">
-          Copyright © 2025 | Privacy Policy
+        <footer className="bg-[#c7bead] py-4 mt-8 flex justify-center">
+          <div className="text-black text-sm">
+            Copyright © 2025 | Privacy Policy
+          </div>
         </footer>
       </div>
     </div>
