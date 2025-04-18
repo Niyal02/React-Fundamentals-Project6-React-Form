@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "../../axios/axios";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import ProductCard from "../productCard/ProductCard";
+import { motion } from "framer-motion";
 
 type Product = {
   uuid: string;
@@ -12,7 +14,7 @@ type Product = {
 
 const fetchProducts = async () => {
   try {
-    const response = await axios.get("/products");
+    const response = await axios.get("/products/all");
     return response.data;
   } catch (error) {
     console.error("Failed to fetch products", error);
@@ -66,18 +68,18 @@ const HomePage = () => {
                 <div className="flex items-center space-x-4">
                   <div className="flex-shrink-0">
                     {/* <svg          user icon logo here
-                      className="h-8 w-8 text-gray-400"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg> */}
+                        className="h-8 w-8 text-gray-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg> */}
                   </div>
                   <Link
                     to="/login"
@@ -96,36 +98,37 @@ const HomePage = () => {
       <main className="flex-1  mx-auto py-6 sm:px-6 lg:px-8 pl-8">
         {/* Product Grid */}
         {isLoading ? (
-          <div className="flex justify-center items-center h-64">
+          <div className="flex justify-center items-center h-48">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+          <ProductCard>
             {products.map((product: Product) => (
-              <div
+              <motion.div
                 key={product.uuid}
-                className="group bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                whileHover={{ scale: 1.05 }}
+                className="group bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
               >
                 <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
                   <img
                     src={product.imageUrl}
                     alt={product.name}
-                    className="h-full w-full object-cover object-center group-hover:opacity-75"
+                    className="h-full w-full object-cover object-center group-hover:opacity-80 transition duration-300"
                   />
                 </div>
                 <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
                 <p className="mt-1 text-lg font-medium text-orange-600">
                   ${product.price.toFixed(2)}
                 </p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </ProductCard>
         )}
       </main>
 
       {/* Footer */}
-      <footer className="bg-white py-4 mt-8 flex justify-baseline">
-        <div className="flex-1 mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-sm">
+      <footer className="bg-[#c7bead] py-4 mt-8 flex justify-baseline">
+        <div className="flex-1 mx-auto px-4 sm:px-6 lg:px-8 text-center text-black text-sm">
           Copyright © 2025 | Privacy Policy
         </div>
       </footer>

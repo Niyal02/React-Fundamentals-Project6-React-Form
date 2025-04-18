@@ -9,8 +9,8 @@ const instance = axios.create({
   withCredentials: true,
 });
 
-let isRefreshing = false;
-let failedRequest: any[] = [];
+// let isRefreshing = false;
+// let failedRequest: any[] = [];
 
 // for request interceptor
 instance.interceptors.request.use((config) => {
@@ -34,18 +34,22 @@ instance.interceptors.response.use(
     const originalRequest = error.config;
 
     // check if error is 401 and is not already retried
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.includes("/auth/refresh")
+    ) {
       //if already refreshing, add to queue
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedRequest.push({
-            resolve: () => resolve(instance(originalRequest)),
-            reject: () => reject(error),
-          });
-        });
-      }
+      // if (isRefreshing) {
+      //   return new Promise((resolve, reject) => {
+      //     failedRequest.push({
+      //       resolve: () => resolve(instance(originalRequest)),
+      //       reject: () => reject(error),
+      //     });
+      //   });
+      // }
       originalRequest._retry = true;
-      isRefreshing = true;
+      // isRefreshing = true;
 
       try {
         //call refresh token endpoint
@@ -62,22 +66,20 @@ instance.interceptors.response.use(
         originalRequest.headers["Authorization"] = `Bearer ${data.accessToken}`;
 
         //retry all queued request
-        failedRequest.forEach((request) => request.reject());
-        failedRequest = [];
+        // failedRequest.forEach((request) => request.reject());
+        // failedRequest = [];
 
         //retry the original request
         return instance(originalRequest);
       } catch (refreshError) {
         //clear token and redirect to login if refresh fails
-        failedRequest.forEach((request) => request.reject());
-        failedRequest = [];
+        // failedRequest.forEach((request) => request.reject());
+        // failedRequest = [];
 
         localStorage.removeItem("accessToken");
         window.location.href = "/login";
 
         return Promise.reject(refreshError);
-      } finally {
-        isRefreshing = false;
       }
     }
     return Promise.reject(error);

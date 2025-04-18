@@ -18,6 +18,7 @@
     "axios": "^1.8.4",
     "axios-retry": "^4.5.0",
     "formik": "^2.4.6",
+    "framer-motion": "^12.7.4",
     "lucide-react": "^0.482.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
