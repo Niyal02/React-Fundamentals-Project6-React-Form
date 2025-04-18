@@ -124,7 +124,7 @@ const LoginForm: React.FC = () => {
               Forgot Password?
             </a>
             <p className="mt-1.5">
-              Don't have an account?{" "}
+              Don't have an account?
               <span
                 className="underline text-blue-400 cursor-pointer"
                 onClick={() => navigate("/register")}
