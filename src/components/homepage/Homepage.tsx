@@ -26,9 +26,18 @@ const fetchProducts = async () => {
     throw error;
   }
 };
+const fetchCategories = async () => {
+  try {
+    const response = await instance.get("/categories/all");
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch categories", error);
+    throw error;
+  }
+};
 
 // Mock Categories data for Sidebar
-const categories = ["Electronics", "Books", "Clothing", "Toys"];
+// const categories = ["Electronics", "Books", "Clothing", "Toys"];
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -38,6 +47,10 @@ const HomePage = () => {
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
+  });
+  const { data: categories = [], isLoading2 } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
   });
 
   const accessToken = localStorage.getItem("accessToken");
@@ -186,24 +199,24 @@ const HomePage = () => {
         )}
 
         {/* Product Card component */}
-        <main className="flex-1 mx-auto py-6 sm:px-6 lg:px-8 pl-8">
+        <main className="flex-1 py-6 sm:px-6 lg:px-8 pl-8">
           {isLoading ? (
             <div className="flex justify-center items-center h-48">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
             </div>
           ) : (
             <ProductCard>
-              {filteredProducts.map((product: Product) => (
+              {products.map((product: Product) => (
                 <motion.div
                   key={product.uuid}
                   whileHover={{ scale: 1.05 }}
                   className="group bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
                 >
-                  <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
+                  <div className="w-full overflow-hidden rounded-lg bg-gray-200">
                     <img
                       src={product.imageUrl}
                       alt={product.name}
-                      className="h-full w-full object-cover object-center group-hover:opacity-80 transition duration-300"
+                      className="h-[200px] aspect-square w-full object-cover object-center group-hover:opacity-80 transition duration-300"
                     />
                   </div>
                   <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
