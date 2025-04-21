@@ -14,6 +14,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Dashboard from "./components/dashboard/Dashboard";
 import OrderItems from "./components/pages/OrderItems";
 import HomePage from "./components/homepage/Homepage";
+import ProductByCategory from "./components/pages/ProductByCategory";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ function App() {
             <Route path="/home" element={<HomePage />} />
             <Route path="/login" element={<LoginForm />} />
             <Route path="/register" element={<RegisterForm />} />
+            <Route path="/home/category/:id" element={<ProductByCategory />} />
             <Route
               path="/forgot-password-404-Page-not-found"
               element={<ErrorPage />}
