@@ -17,6 +17,11 @@ type Product = {
   category: string;
 };
 
+type Category = {
+  uuid: string;
+  name: string;
+};
+
 const fetchProducts = async () => {
   try {
     const response = await instance.get("/products/all");
@@ -26,29 +31,27 @@ const fetchProducts = async () => {
     throw error;
   }
 };
-const fetchCategories = async () => {
+const fetchCategories = async (): Promise<Category[]> => {
   try {
     const response = await instance.get("/categories/all");
-    return response.data;
+    console.log(response.data);
+    return response.data.categories;
   } catch (error) {
     console.error("Failed to fetch categories", error);
     throw error;
   }
 };
 
-// Mock Categories data for Sidebar
-// const categories = ["Electronics", "Books", "Clothing", "Toys"];
-
 const HomePage = () => {
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const { data: products = [], isLoading } = useQuery({
+  const { data: products = [], isLoading: isProductsLoading } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
   });
-  const { data: categories = [], isLoading2 } = useQuery({
+  const { data: categories = [], isLoading: isCategoriesLoading } = useQuery({
     queryKey: ["categories"],
     queryFn: fetchCategories,
   });
@@ -85,27 +88,25 @@ const HomePage = () => {
           {isCollapsed ? <FaBars /> : <FaTimes />}
         </button>
 
-        <div className="flex flex-col gap-1">
-          {categories.map((category) => (
+        {isCategoriesLoading ? (
+          <div className="flex justify-center">
+            <div></div>
+          </div>
+        ) : (
+          <div>
             <div
-              key={category}
-              onClick={() => setSelectedCategory(category)}
+              onClick={() => setSelectedCategory(null)}
               className={`relative flex items-center mt-4 p-2 rounded cursor-pointer transition-all duration-300 ${
                 isCollapsed ? "justify-center" : "w-full"
-              } hover:bg-amber-700`}
+              } hover:bg-amber-700 ${!selectedCategory ? "bg-amber-700" : ""}`}
             >
-              <span
-                className={`${
-                  isCollapsed
-                    ? "opacity-0 absolute left-14 group-hover:opacity-100"
-                    : ""
-                }`}
-              >
-                {category}
-              </span>
+              {!isCollapsed && "All Categories"}
             </div>
-          ))}
-        </div>
+            {categories.map((category: Category) => (
+              <div>{!isCollapsed && category.name}</div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Main Content */}
@@ -200,7 +201,7 @@ const HomePage = () => {
 
         {/* Product Card component */}
         <main className="flex-1 py-6 sm:px-6 lg:px-8 pl-8">
-          {isLoading ? (
+          {isProductsLoading ? (
             <div className="flex justify-center items-center h-48">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
             </div>

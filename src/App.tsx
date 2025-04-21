@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import LoginForm from "./components/login_register_form/LoginForm";
 import RegisterForm from "./components/login_register_form/RegisterForm";
 import ErrorPage from "./components/404";
@@ -30,6 +30,7 @@ function App() {
               path="/forgot-password-404-Page-not-found"
               element={<ErrorPage />}
             />
+            <Route path="*" element={<Navigate to="/home" />} />
           </Route>
           <Route path="/user" element={<DashboardLayout />}>
             <Route element={<PrivateRoute />}>
