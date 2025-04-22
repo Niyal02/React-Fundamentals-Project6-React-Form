@@ -16,47 +16,50 @@ import OrderItems from "./components/pages/OrderItems";
 import HomePage from "./components/homepage/Homepage";
 import ProductByCategory from "./components/pages/ProductByCategory";
 import HomepageLayout from "./components/homepage/HomepageLayout";
+import { CartProvider } from "./components/cart/CartContext";
 
 const queryClient = new QueryClient();
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Routes>
-          <Route element={<PublicRoute />}>
-            <Route path="/home" element={<HomepageLayout />}>
-              <Route index element={<HomePage />} />
+      <CartProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route element={<PublicRoute />}>
+              <Route path="/home" element={<HomepageLayout />}>
+                <Route index element={<HomePage />} />
+                <Route
+                  path="/home/category/:id"
+                  element={<ProductByCategory />}
+                />
+              </Route>
+              <Route path="/login" element={<LoginForm />} />
+              <Route path="/register" element={<RegisterForm />} />
               <Route
-                path="/home/category/:id"
-                element={<ProductByCategory />}
+                path="/forgot-password-404-Page-not-found"
+                element={<ErrorPage />}
               />
+              <Route path="*" element={<Navigate to="/home" />} />
             </Route>
-            <Route path="/login" element={<LoginForm />} />
-            <Route path="/register" element={<RegisterForm />} />
-            <Route
-              path="/forgot-password-404-Page-not-found"
-              element={<ErrorPage />}
-            />
-            <Route path="*" element={<Navigate to="/home" />} />
-          </Route>
-          <Route path="/user" element={<DashboardLayout />}>
-            <Route element={<PrivateRoute />}>
-              <Route path="/user/dashboard" element={<Dashboard />} />
-              <Route path="/user/category" element={<Category />} />
-              <Route path="/user/products" element={<Products />} />
-              <Route path="/user/payment" element={<Payment />} />
-              <Route path="/user/order-history" element={<OrderItems />} />
+            <Route path="/user" element={<DashboardLayout />}>
+              <Route element={<PrivateRoute />}>
+                <Route path="/user/dashboard" element={<Dashboard />} />
+                <Route path="/user/category" element={<Category />} />
+                <Route path="/user/products" element={<Products />} />
+                <Route path="/user/payment" element={<Payment />} />
+                <Route path="/user/order-history" element={<OrderItems />} />
+              </Route>
             </Route>
-          </Route>
-        </Routes>
-        <ToastContainer />
-        <Toaster
-          toastOptions={{
-            duration: 3000,
-          }}
-        />
-      </BrowserRouter>
+          </Routes>
+          <ToastContainer />
+          <Toaster
+            toastOptions={{
+              duration: 3000,
+            }}
+          />
+        </BrowserRouter>
+      </CartProvider>
     </QueryClientProvider>
   );
 }
