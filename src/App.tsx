@@ -15,6 +15,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 import OrderItems from "./components/pages/OrderItems";
 import HomePage from "./components/homepage/Homepage";
 import ProductByCategory from "./components/pages/ProductByCategory";
+import HomepageLayout from "./components/homepage/HomepageLayout";
 
 const queryClient = new QueryClient();
 
@@ -24,7 +25,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route element={<PublicRoute />}>
-            <Route path="/home" element={<HomePage />} />
+            <Route path="/home" element={<HomepageLayout />}>
+              <Route index element={<HomePage />} />
+            </Route>
             <Route path="/login" element={<LoginForm />} />
             <Route path="/register" element={<RegisterForm />} />
             <Route path="/home/category/:id" element={<ProductByCategory />} />
