@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { useOutletContext } from "react-router-dom";
 import ProductCard from "../productCard/ProductCard";
 
 import { motion } from "framer-motion";
@@ -23,29 +22,29 @@ const fetchProducts = async () => {
   }
 };
 
-type OutletContextType = {
-  searchTerm: string;
-  selectedCategory: string | null;
-};
+// type OutletContextType = {
+//   searchTerm: string;
+//   selectedCategory: string | null;
+// };
 
 const HomePage = () => {
-  const { searchTerm, selectedCategory } =
-    useOutletContext<OutletContextType>();
+  // const { searchTerm, selectedCategory } =
+  //   useOutletContext<OutletContextType>();
   const { data: products = [], isLoading: isProductsLoading } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
   });
 
   // Filter products based on search term or selected category
-  const filteredProducts = searchTerm
-    ? products.filter((product: Product) =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : selectedCategory
-    ? products.filter(
-        (product: Product) => product.category === selectedCategory
-      )
-    : products;
+  // const filteredProducts = searchTerm
+  //   ? products.filter((product: Product) =>
+  //       product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  //     )
+  //   : selectedCategory
+  //   ? products.filter(
+  //       (product: Product) => product.category === selectedCategory
+  //     )
+  //   : products;
 
   return (
     <div>
@@ -57,7 +56,7 @@ const HomePage = () => {
           </div>
         ) : (
           <ProductCard>
-            {filteredProducts.map((product: Product) => (
+            {products.map((product: Product) => (
               <motion.div
                 key={product.uuid}
                 whileHover={{ scale: 1.05 }}
@@ -71,9 +70,13 @@ const HomePage = () => {
                   />
                 </div>
                 <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
-                <p className="mt-1 text-lg font-medium text-orange-600">
-                  ${product.price.toFixed(2)}
-                </p>
+                <div className="flex">
+                  <p className="mt-1 text-lg font-medium text-orange-600">
+                    ${product.price.toFixed(2)}
+                  </p>
+
+                  <button className="">Add to Cart</button>
+                </div>
               </motion.div>
             ))}
           </ProductCard>

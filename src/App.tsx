@@ -27,10 +27,13 @@ function App() {
           <Route element={<PublicRoute />}>
             <Route path="/home" element={<HomepageLayout />}>
               <Route index element={<HomePage />} />
+              <Route
+                path="/home/category/:id"
+                element={<ProductByCategory />}
+              />
             </Route>
             <Route path="/login" element={<LoginForm />} />
             <Route path="/register" element={<RegisterForm />} />
-            <Route path="/home/category/:id" element={<ProductByCategory />} />
             <Route
               path="/forgot-password-404-Page-not-found"
               element={<ErrorPage />}

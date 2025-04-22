@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchCategories } from "../services/categories";
 
 export const useCategories = () => {
-  const { data: categories = [] } = useQuery({
+  const query = useQuery({
     queryKey: ["categories"],
     queryFn: fetchCategories,
   });
-  return { categories };
+  return query;
 };
