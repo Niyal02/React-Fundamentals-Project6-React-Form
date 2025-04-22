@@ -154,12 +154,12 @@ export default function HomepageLayout() {
                   key={category.uuid}
                   onClick={() => {
                     setSelectedCategory(category.uuid);
-                    navigate(`/home/category/${id}`);
+                    navigate(`/home/category/${category.uuid}`);
                   }}
                   className={`relative flex items-center mt-4 p-2 rounded  transition-all duration-300 ${
-                    isCollapsed ? "justify-center" : "w-full"
+                    isCollapsed ? "justify-center" : "w-full cursor-pointer"
                   } hover:bg-amber-700 ${
-                    selectedCategory ? "bg-amber-700" : ""
+                    selectedCategory === category.uuid ? "bg-amber-700" : ""
                   }`}
                 >
                   {!isCollapsed && category.name}
