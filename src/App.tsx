@@ -17,6 +17,7 @@ import HomePage from "./components/homepage/Homepage";
 import ProductByCategory from "./components/pages/ProductByCategory";
 import HomepageLayout from "./components/homepage/HomepageLayout";
 import { CartProvider } from "./components/cart/CartContext";
+import Cart from "./components/cart/Cart";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ function App() {
                   path="/home/category/:id"
                   element={<ProductByCategory />}
                 />
+                <Route path="/home/cart" element={<Cart />} />
               </Route>
               <Route path="/login" element={<LoginForm />} />
               <Route path="/register" element={<RegisterForm />} />
