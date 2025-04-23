@@ -26,15 +26,20 @@ const Cart = () => {
   }
 
   return (
-    <div>
-      <h1>Your Cart</h1>
+    <div className="  max-w-4xl mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-6 text-orange-700">Your Cart</h1>
       {cartItemCount === 0 ? (
-        <div>
-          <p> Your cart is Empty</p>
-          <Link to="/home"> Continue Shopping</Link>
+        <div className="text-center py-8 pr-2">
+          <p className="text-lg mb-10"> Your cart is Empty</p>
+          <Link
+            to="/home"
+            className="px-4 py-2 rounded bg-orange-700 text-white hover:bg-orange-600"
+          >
+            Continue Shopping
+          </Link>
         </div>
       ) : (
-        <div>
+        <div className="space-y-4">
           {cartItems.map((item) => (
             <div key={item.productId} className="">
               <div>
@@ -45,16 +50,23 @@ const Cart = () => {
                 </div>
               </div>
               <div>
-                <button onClick={() => decrementQuantity(item.productId)}>
+                <button
+                  disabled={isMutating}
+                  onClick={() => decrementQuantity(item.productId)}
+                >
                   -
                 </button>
 
                 <span>{item.quantity}</span>
-                <button onClick={() => incrementQuantity(item.productId)}>
+                <button
+                  disabled={isMutating}
+                  onClick={() => incrementQuantity(item.productId)}
+                >
                   +
                 </button>
 
                 <button
+                  disabled={isMutating}
                   onClick={() => removeFromCart(item.productId)}
                   className="ml-4 text-red-500 hover:text-red-700"
                 >
