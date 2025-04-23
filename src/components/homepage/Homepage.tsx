@@ -22,14 +22,7 @@ const fetchProducts = async () => {
   }
 };
 
-// type OutletContextType = {
-//   searchTerm: string;
-//   selectedCategory: string | null;
-// };
-
 const HomePage = () => {
-  // const { searchTerm, selectedCategory } =
-  //   useOutletContext<OutletContextType>();
   const { data: products = [], isLoading: isProductsLoading } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,

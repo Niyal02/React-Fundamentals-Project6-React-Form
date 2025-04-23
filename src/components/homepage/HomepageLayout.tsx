@@ -4,6 +4,7 @@ import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import { useCategories } from "../../hooks/use-categories";
+import { useCart } from "../cart/CartContext";
 
 type Category = {
   uuid: string;
@@ -15,6 +16,7 @@ const HomepageLayout = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const { cartItemCount } = useCart();
 
   const { data: categories = [], isLoading: isCategoriesLoading } =
     useCategories();
@@ -102,10 +104,15 @@ const HomepageLayout = () => {
 
               {/* Cart Icon */}
               <Link
-                to="/cart"
+                to="/home/cart"
                 className="text-2xl text-orange-700 hover:text-orange-800"
               >
                 <FiShoppingCart />
+                {cartItemCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    {cartItemCount}
+                  </span>
+                )}
               </Link>
 
               {/* Login */}
@@ -130,7 +137,7 @@ const HomepageLayout = () => {
 
         <Outlet />
 
-        {/* Footer - Same as HomePage */}
+        {/* Footer */}
         <footer className="bg-[#c7bead] py-4 mt-8 flex justify-center">
           <div className="text-black text-sm">
             Copyright © 2025 | Privacy Policy

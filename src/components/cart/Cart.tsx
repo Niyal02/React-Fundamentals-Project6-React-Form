@@ -52,14 +52,15 @@ const Cart = () => {
                   className="w-16 h-16 object-cover rounded"
                 />
                 <div>
-                  <h3>{item.name}</h3>
-                  <p>${item.price.toFixed(2)}</p>
+                  <h3 className="font-medium">{item.name}</h3>
+                  <p className="text-orange-600">${item.price.toFixed(2)}</p>
                 </div>
               </div>
-              <div>
+              <div className="felx items-center space-x-2">
                 <button
                   disabled={isMutating}
                   onClick={() => decrementQuantity(item.productId)}
+                  className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
                 >
                   -
                 </button>
@@ -68,6 +69,7 @@ const Cart = () => {
                 <button
                   disabled={isMutating}
                   onClick={() => incrementQuantity(item.productId)}
+                  className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
                 >
                   +
                 </button>
@@ -82,10 +84,14 @@ const Cart = () => {
               </div>
             </div>
           ))}
-          <div>
-            <div>
-              <h3>Total: ${totalPrice.toFixed(2)}</h3>
-              <button>Checkout</button>
+          <div className="border-t pt-4 mt-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-xl font-bold">
+                Total: ${totalPrice.toFixed(2)}
+              </h3>
+              <button className="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">
+                Checkout
+              </button>
             </div>
           </div>
         </div>
