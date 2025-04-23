@@ -45,8 +45,12 @@ const Cart = () => {
               key={item.productId}
               className="flex items-center justify-between p-4 bg-white rounded-lg shadow"
             >
-              <div>
-                <img src={item.imageUrl} alt={item.name} className="" />
+              <div className="flex items-center space-x-4">
+                <img
+                  src={item.imageUrl}
+                  alt={item.name}
+                  className="w-16 h-16 object-cover rounded"
+                />
                 <div>
                   <h3>{item.name}</h3>
                   <p>${item.price.toFixed(2)}</p>
