@@ -17,7 +17,7 @@ type CartContextType = {
     name: string;
     imageUrl: string;
     price: number;
-  }) => void;
+  }) => boolean;
   removeFromCart: (productId: string) => void;
   incrementQuantity: (productId: string) => void;
   decrementQuantity: (productId: string) => void;
@@ -115,7 +115,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     price: number;
   }) => {
     if (!isAuthenticated()) {
-      // We'll handle the redirect in the component to have access to navigate
       return false;
     }
     addToCartMutation(product);
