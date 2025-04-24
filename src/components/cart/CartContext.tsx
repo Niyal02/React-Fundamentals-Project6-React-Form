@@ -36,6 +36,10 @@ export const useCart = () => {
   return context;
 };
 
+const isAuthenticated = () => {
+  return !!localStorage.getItem("accessToken");
+};
+
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const queryClient = useQueryClient();
   const [mutatingProductId, setMutatingProductId] = useState<string | null>(
