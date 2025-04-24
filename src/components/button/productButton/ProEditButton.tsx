@@ -40,7 +40,7 @@ const ProEditButton = ({
   const [error, setError] = useState("");
   const queryClient = useQueryClient();
 
-  const { categories } = useCategories();
+  const { data: categories = [] } = useCategories();
 
   const uploadImage = async (file: File): Promise<string> => {
     try {

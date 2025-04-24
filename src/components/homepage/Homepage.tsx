@@ -3,6 +3,7 @@ import ProductCard from "../productCard/ProductCard";
 
 import { motion } from "framer-motion";
 import instance from "../../axios/axios";
+import { useCart } from "../cart/CartContext";
 
 type Product = {
   uuid: string;
@@ -23,6 +24,7 @@ const fetchProducts = async () => {
 };
 
 const HomePage = () => {
+  const { addToCart, cartItems, removeFromCart, isMutating } = useCart();
   const { data: products = [], isLoading: isProductsLoading } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
@@ -49,29 +51,55 @@ const HomePage = () => {
           </div>
         ) : (
           <ProductCard>
-            {products.map((product: Product) => (
-              <motion.div
-                key={product.uuid}
-                whileHover={{ scale: 1.05 }}
-                className="group bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-              >
-                <div className="w-full overflow-hidden rounded-lg bg-gray-200">
-                  <img
-                    src={product.imageUrl}
-                    alt={product.name}
-                    className="h-[200px] aspect-square w-full object-cover object-center group-hover:opacity-80 transition duration-300"
-                  />
-                </div>
-                <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
-                <div className="flex">
-                  <p className="mt-1 text-lg font-medium text-orange-600">
-                    ${product.price.toFixed(2)}
-                  </p>
+            {products.map((product: Product) => {
+              const isInCart = cartItems.some(
+                (item) => item.productId === product.uuid
+              );
+              return (
+                <motion.div
+                  key={product.uuid}
+                  whileHover={{ scale: 1.05 }}
+                  className="group bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+                >
+                  <div className="w-full overflow-hidden rounded-lg bg-gray-200">
+                    <img
+                      src={product.imageUrl}
+                      alt={product.name}
+                      className="h-[200px] aspect-square w-full object-cover object-center group-hover:opacity-80 transition duration-300"
+                    />
+                  </div>
 
-                  <button className="">Add to Cart</button>
-                </div>
-              </motion.div>
-            ))}
+                  <div className="flex justify-between items-center">
+                    <p className="mt-1 text-lg font-medium text-orange-600">
+                      ${product.price.toFixed(2)}
+                    </p>
+                    <button
+                      onClick={() =>
+                        isInCart
+                          ? removeFromCart(product.uuid)
+                          : addToCart(product)
+                      }
+                      disabled={isMutating(product.uuid)}
+                      className={`px-3 py-1 rounded text-sm ${
+                        isInCart
+                          ? "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                          : "bg-orange-600 text-white hover:bg-orange-700"
+                      } ${
+                        isMutating(product.uuid)
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                      }`}
+                    >
+                      {isMutating(product.uuid)
+                        ? "Processing..."
+                        : isInCart
+                        ? "Remove from Cart"
+                        : "Add to Cart"}
+                    </button>
+                  </div>
+                </motion.div>
+              );
+            })}
           </ProductCard>
         )}
       </main>

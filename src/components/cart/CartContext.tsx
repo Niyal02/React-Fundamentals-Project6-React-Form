@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode, useState } from "react";
 import instance from "../../axios/axios";
 
 type CartItem = {
@@ -23,7 +23,7 @@ type CartContextType = {
   decrementQuantity: (productId: string) => void;
   cartItemCount: number;
   isLoading: boolean;
-  isMutating: boolean;
+  isMutating: (productId?: string) => boolean;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -38,6 +38,9 @@ export const useCart = () => {
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const queryClient = useQueryClient();
+  const [mutatingProductId, setMutatingProductId] = useState<string | null>(
+    null
+  );
 
   //fetching api using query
   const { data: cartItems = [], isLoading } = useQuery<CartItem[]>({
@@ -49,49 +52,57 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   });
 
   //Mutation for adding to cart
-  const { mutate: addToCartMutation, isPending: isAdding } = useMutation({
+  const { mutate: addToCartMutation } = useMutation({
     mutationFn: async (product: {
       uuid: string;
       name: string;
       imageUrl: string;
       price: number;
     }) => {
+      setMutatingProductId(product.uuid);
       await instance.post("/cart/add", { productId: product.uuid });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
+    onSettled: () => {
+      setMutatingProductId(null);
+    },
   });
 
   //Mutation for removing from cart
-  const { mutate: removeFromCartMutation, isPending: isRemoving } = useMutation(
-    {
-      mutationFn: async (productId: string) => {
-        await instance.delete(`/cart/remove/${productId}`);
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["cart"] });
-      },
-    }
-  );
+  const { mutate: removeFromCartMutation } = useMutation({
+    mutationFn: async (productId: string) => {
+      setMutatingProductId(productId);
+      await instance.delete(`/cart/remove/${productId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+    onSettled: () => {
+      setMutatingProductId(null);
+    },
+  });
 
   //Mutation for updating cart quantity
-  const { mutate: updateQuantityMutation, isPending: isUpdating } = useMutation(
-    {
-      mutationFn: async ({
-        productId,
-        quantity,
-      }: {
-        productId: string;
-        quantity: number;
-      }) => {
-        await instance.patch(`/cart/update/${productId}`, { quantity });
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["cart"] });
-      },
-    }
-  );
+  const { mutate: updateQuantityMutation } = useMutation({
+    mutationFn: async ({
+      productId,
+      quantity,
+    }: {
+      productId: string;
+      quantity: number;
+    }) => {
+      setMutatingProductId(productId);
+      await instance.patch(`/cart/update/${productId}`, { quantity });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+    onSettled: () => {
+      setMutatingProductId(null);
+    },
+  });
 
   const addToCart = (product: {
     uuid: string;
@@ -132,7 +143,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     0
   );
 
-  const isMutating = isAdding || isUpdating || isRemoving;
+  const isMutating = (productId?: string) => {
+    if (!productId) return false;
+    return mutatingProductId === productId;
+  };
 
   return (
     <CartContext.Provider

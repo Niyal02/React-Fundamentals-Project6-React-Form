@@ -33,7 +33,7 @@ const Cart = () => {
           <p className="text-lg mb-10"> Your cart is Empty</p>
           <Link
             to="/home"
-            className="px-4 py-2 rounded bg-orange-700 text-white hover:bg-orange-600"
+            className="px-4 py-2 cursor-pointer rounded bg-orange-700 text-white hover:bg-orange-600"
           >
             Continue Shopping
           </Link>
@@ -58,26 +58,38 @@ const Cart = () => {
               </div>
               <div className="felx items-center space-x-2">
                 <button
-                  disabled={isMutating}
+                  disabled={isMutating(item.productId)}
                   onClick={() => decrementQuantity(item.productId)}
-                  className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                  className={`px-2 py-1 bg-gray-200 rounded ${
+                    isMutating(item.productId)
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-gray-300"
+                  }`}
                 >
                   -
                 </button>
 
                 <span>{item.quantity}</span>
                 <button
-                  disabled={isMutating}
+                  disabled={isMutating(item.productId)}
                   onClick={() => incrementQuantity(item.productId)}
-                  className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                  className={`px-2 py-1 bg-gray-200 rounded ${
+                    isMutating(item.productId)
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-gray-300"
+                  }`}
                 >
                   +
                 </button>
 
                 <button
-                  disabled={isMutating}
+                  disabled={isMutating(item.productId)}
                   onClick={() => removeFromCart(item.productId)}
-                  className="ml-4 text-red-500 hover:text-red-700"
+                  className={`ml-4 ${
+                    isMutating(item.productId)
+                      ? "opacity-50 cursor-not-allowed text-red-300"
+                      : "text-red-500 hover:text-red-700"
+                  }`}
                 >
                   Remove
                 </button>
@@ -89,7 +101,7 @@ const Cart = () => {
               <h3 className="text-xl font-bold">
                 Total: ${totalPrice.toFixed(2)}
               </h3>
-              <button className="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700">
+              <button className="px-4 py-2 bg-orange-600 cursor-pointer text-white rounded hover:bg-orange-700">
                 Checkout
               </button>
             </div>
