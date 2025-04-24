@@ -114,7 +114,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     imageUrl: string;
     price: number;
   }) => {
+    if (!isAuthenticated()) {
+      // We'll handle the redirect in the component to have access to navigate
+      return false;
+    }
     addToCartMutation(product);
+    return true;
   };
 
   const removeFromCart = (productId: string) => {
