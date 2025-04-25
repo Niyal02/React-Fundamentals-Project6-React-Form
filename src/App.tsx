@@ -34,7 +34,9 @@ function App() {
                   path="/home/category/:id"
                   element={<ProductByCategory />}
                 />
+                {/* <Route element={<PrivateRoute requiredRole="user" />}> */}
                 <Route path="/home/cart" element={<Cart />} />
+                {/* </Route> */}
               </Route>
               <Route path="/login" element={<LoginForm />} />
               <Route path="/register" element={<RegisterForm />} />
@@ -45,7 +47,7 @@ function App() {
               <Route path="*" element={<Navigate to="/home" />} />
             </Route>
             <Route path="/user" element={<DashboardLayout />}>
-              <Route element={<PrivateRoute />}>
+              <Route element={<PrivateRoute requiredRole="admin" />}>
                 <Route path="/user/dashboard" element={<Dashboard />} />
                 <Route path="/user/category" element={<Category />} />
                 <Route path="/user/products" element={<Products />} />

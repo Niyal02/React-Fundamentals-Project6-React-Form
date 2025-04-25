@@ -4,6 +4,7 @@ import ProductCard from "../productCard/ProductCard";
 import { motion } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCart } from "../cart/CartContext";
+import { toast } from "react-toastify";
 
 type Product = {
   uuid: string;
@@ -69,9 +70,8 @@ const ProductByCategory = () => {
                     onClick={() => {
                       const added = addToCart(product);
                       if (!added) {
-                        navigate("/login", {
-                          state: { from: window.location.pathname },
-                        });
+                        toast("Please login to add items to your cart");
+                        navigate("/login");
                       }
                     }}
                     disabled={isMutating(product.uuid)}

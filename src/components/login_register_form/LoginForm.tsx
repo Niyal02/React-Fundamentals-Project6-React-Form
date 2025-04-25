@@ -5,7 +5,7 @@ import PasswordView from "../view_password_icon/PasswordViewIcon";
 import axios from "../../axios/axios";
 import { useState } from "react";
 import { Loader2Icon } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface LoginValues {
   email: string;
@@ -13,7 +13,6 @@ interface LoginValues {
 }
 
 const LoginForm: React.FC = () => {
-  const location = useLocation();
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
@@ -44,18 +43,20 @@ const LoginForm: React.FC = () => {
       const response = await axios.post<{
         accessToken: string;
         refreshToken: string;
+        role: string;
       }>("auth/login", values);
       console.log("Login Successful", response.data);
 
-      //store token
+      //store token and role
       localStorage.setItem("accessToken", response.data.accessToken);
+      localStorage.setItem("role", response.data.role);
 
-      //After successful login , the token wil be stored
-      // navigate("/user/dashboard");
-
-      // Check for redirect location
-      const from = location.state?.from || "/user/dashboard"; // Default to dashboard
-      navigate(from);
+      // role based redirected
+      if (response.data.role === "admin") {
+        navigate("/user/dashboard");
+      } else {
+        navigate("/home");
+      }
     } catch {
       setError("Login failed. Please check your credentials and try again.");
     } finally {

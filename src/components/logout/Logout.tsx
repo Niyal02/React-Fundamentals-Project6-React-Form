@@ -9,6 +9,7 @@ const Logout = () => {
     try {
       await instance.post<{ accessToken: string }>("auth/logout");
       localStorage.removeItem("accessToken");
+      localStorage.removeItem("role");
       navigate("/home");
     } catch (error) {
       console.log("Logout Failed", error);

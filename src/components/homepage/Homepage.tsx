@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import instance from "../../axios/axios";
 import { useCart } from "../cart/CartContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 type Product = {
   uuid: string;
@@ -79,9 +80,8 @@ const HomePage = () => {
                       onClick={() => {
                         const added = addToCart(product);
                         if (!added) {
-                          navigate("/login", {
-                            state: { from: window.location.pathname },
-                          });
+                          toast("Please login to add items to your cart");
+                          navigate("/login");
                         }
                       }}
                       disabled={isMutating(product.uuid)}
