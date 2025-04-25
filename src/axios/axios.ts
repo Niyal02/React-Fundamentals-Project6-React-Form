@@ -3,7 +3,7 @@ import axios from "axios";
 
 const instance = axios.create({
   baseURL:
-    "https://8278-2405-acc0-1306-305-89ae-af62-c4b1-aa3d.ngrok-free.app/",
+    "https://4073-2405-acc0-1306-305-e902-24b6-6576-9534.ngrok-free.app/",
   headers: {
     "ngrok-skip-browser-warning": "69420",
   },

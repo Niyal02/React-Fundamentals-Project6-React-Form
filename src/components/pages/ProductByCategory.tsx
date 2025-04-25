@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import instance from "../../axios/axios";
 import ProductCard from "../productCard/ProductCard";
 import { motion } from "framer-motion";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCart } from "../cart/CartContext";
 
 type Product = {
@@ -24,7 +24,8 @@ const fetchCategoryProducts = async (id: string) => {
 };
 
 const ProductByCategory = () => {
-  const { cartItems, addToCart, removeFromCart, isMutating } = useCart();
+  const navigate = useNavigate();
+  const { cartItems, addToCart, isMutating } = useCart();
   const params = useParams();
   const categoryId = params.id || "";
   const { data: products = [], isLoading: isCategoriesLoading } = useQuery({
@@ -65,11 +66,14 @@ const ProductByCategory = () => {
                     ${product.price.toFixed(2)}
                   </p>
                   <button
-                    onClick={() =>
-                      isInCart
-                        ? removeFromCart(product.uuid)
-                        : addToCart(product)
-                    }
+                    onClick={() => {
+                      const added = addToCart(product);
+                      if (!added) {
+                        navigate("/login", {
+                          state: { from: window.location.pathname },
+                        });
+                      }
+                    }}
                     disabled={isMutating(product.uuid)}
                     className={`px-3 py-1 rounded text-sm ${
                       isInCart

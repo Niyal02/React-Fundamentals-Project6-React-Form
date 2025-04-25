@@ -4,6 +4,7 @@ import ProductCard from "../productCard/ProductCard";
 import { motion } from "framer-motion";
 import instance from "../../axios/axios";
 import { useCart } from "../cart/CartContext";
+import { useNavigate } from "react-router-dom";
 
 type Product = {
   uuid: string;
@@ -24,7 +25,8 @@ const fetchProducts = async () => {
 };
 
 const HomePage = () => {
-  const { addToCart, cartItems, removeFromCart, isMutating } = useCart();
+  const navigate = useNavigate();
+  const { addToCart, cartItems, isMutating } = useCart();
   const { data: products = [], isLoading: isProductsLoading } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
@@ -74,11 +76,14 @@ const HomePage = () => {
                       ${product.price.toFixed(2)}
                     </p>
                     <button
-                      onClick={() =>
-                        isInCart
-                          ? removeFromCart(product.uuid)
-                          : addToCart(product)
-                      }
+                      onClick={() => {
+                        const added = addToCart(product);
+                        if (!added) {
+                          navigate("/login", {
+                            state: { from: window.location.pathname },
+                          });
+                        }
+                      }}
                       disabled={isMutating(product.uuid)}
                       className={`px-3 py-1 rounded text-sm ${
                         isInCart

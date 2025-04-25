@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import login_reg_image from "../../assets/login logo.png";
@@ -6,6 +5,7 @@ import PasswordView from "../view_password_icon/PasswordViewIcon";
 import axios from "../../axios/axios";
 import { useState } from "react";
 import { Loader2Icon } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface LoginValues {
   email: string;
@@ -13,6 +13,7 @@ interface LoginValues {
 }
 
 const LoginForm: React.FC = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
@@ -50,7 +51,11 @@ const LoginForm: React.FC = () => {
       localStorage.setItem("accessToken", response.data.accessToken);
 
       //After successful login , the token wil be stored
-      navigate("/user/dashboard");
+      // navigate("/user/dashboard");
+
+      // Check for redirect location
+      const from = location.state?.from || "/user/dashboard"; // Default to dashboard
+      navigate(from);
     } catch {
       setError("Login failed. Please check your credentials and try again.");
     } finally {
