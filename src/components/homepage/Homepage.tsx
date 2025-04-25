@@ -33,7 +33,7 @@ const HomePage = () => {
     queryFn: fetchProducts,
   });
 
-  // Filter products based on search term or selected categor
+  // Filter products based on search term or selected category
   // const filteredProducts = searchTerm
   //   ? products.filter((product: Product) =>
   //       product.name.toLowerCase().includes(searchTerm.toLowerCase())
