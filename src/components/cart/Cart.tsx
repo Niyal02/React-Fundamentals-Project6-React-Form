@@ -47,13 +47,15 @@ const Cart = () => {
             >
               <div className="flex items-center space-x-4">
                 <img
-                  src={item.imageUrl}
+                  src={item.product.imageUrl}
                   alt={item.name}
                   className="w-16 h-16 object-cover rounded"
                 />
                 <div>
-                  <h3 className="font-medium">{item.name}</h3>
-                  <p className="text-orange-600">${item.price.toFixed(2)}</p>
+                  <h3 className="font-medium">{item.product.name}</h3>
+                  <p className="text-orange-600">
+                    ${item.product.price?.toFixed(2)}
+                  </p>
                 </div>
               </div>
               <div className="felx items-center space-x-2">

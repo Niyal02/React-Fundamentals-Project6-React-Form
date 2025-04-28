@@ -44,12 +44,13 @@ const LoginForm: React.FC = () => {
         accessToken: string;
         refreshToken: string;
         role: string;
+        user: { role: string };
       }>("auth/login", values);
       console.log("Login Successful", response.data);
 
       //store token and role
       localStorage.setItem("accessToken", response.data.accessToken);
-      localStorage.setItem("role", response.data.role);
+      localStorage.setItem("role", response.data.user.role);
 
       // role based redirected
       if (response.data.role === "admin") {

@@ -46,12 +46,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     null
   );
 
-  //fetching api using query
+  //fetching cart api using query
   const { data: cartItems = [], isLoading } = useQuery<CartItem[]>({
     queryKey: ["cart"],
     queryFn: async () => {
       const response = await instance.get("/cart");
-      return response.data.items;
+      return response.data?.items;
     },
   });
 
@@ -62,9 +62,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       name: string;
       imageUrl: string;
       price: number;
+      quantity: number;
     }) => {
       setMutatingProductId(product.uuid);
-      await instance.post("/cart/add", { productId: product.uuid });
+      await instance.post("/cart/add", {
+        product: product.uuid,
+        quantity: 1,
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
@@ -113,6 +117,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     name: string;
     imageUrl: string;
     price: number;
+    quantity: number;
   }) => {
     if (!isAuthenticated()) {
       return false;
