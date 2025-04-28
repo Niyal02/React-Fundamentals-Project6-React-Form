@@ -27,7 +27,7 @@ const fetchProducts = async () => {
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { addToCart, cartItems, isMutating } = useCart();
+  const { addToCart, cart, isMutating } = useCart();
   const { data: products = [], isLoading: isProductsLoading } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
@@ -55,8 +55,8 @@ const HomePage = () => {
         ) : (
           <ProductCard>
             {products.map((product: Product) => {
-              const isInCart = cartItems.some(
-                (item) => item.productId === product.uuid
+              const isInCart = cart?.items.some(
+                (item) => item.product.uuid === product.uuid
               );
               return (
                 <motion.div
@@ -78,7 +78,7 @@ const HomePage = () => {
                     </p>
                     <button
                       onClick={() => {
-                        const added = addToCart(product);
+                        const added = addToCart(product.uuid);
                         if (!added) {
                           toast("Please login to add items to your cart");
                           navigate("/login");
@@ -98,7 +98,7 @@ const HomePage = () => {
                       {isMutating(product.uuid)
                         ? "Processing..."
                         : isInCart
-                        ? "Remove from Cart"
+                        ? "Add to Cart"
                         : "Add to Cart"}
                     </button>
                   </div>

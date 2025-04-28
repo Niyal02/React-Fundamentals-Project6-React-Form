@@ -89,7 +89,7 @@ export default function Products() {
     /* Fetching categories */
   }
 
-  const { categories } = useCategories();
+  const { data: categories } = useCategories();
 
   {
     /* Fetching Products */

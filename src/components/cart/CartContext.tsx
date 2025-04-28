@@ -2,22 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createContext, useContext, ReactNode, useState } from "react";
 import instance from "../../axios/axios";
 
-type CartItem = {
-  productId: string;
-  name: string;
-  imageUrl: string;
-  price: number;
-  quantity: number;
-};
-
 type CartContextType = {
-  cartItems: CartItem[];
-  addToCart: (product: {
-    uuid: string;
-    name: string;
-    imageUrl: string;
-    price: number;
-  }) => boolean;
+  cart: GetCartResponse | undefined;
+  addToCart: (productId: string) => boolean;
   removeFromCart: (productId: string) => void;
   incrementQuantity: (productId: string) => void;
   decrementQuantity: (productId: string) => void;
@@ -27,6 +14,25 @@ type CartContextType = {
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
+
+export interface GetCartResponse {
+  userId: string;
+  items: Item[];
+  total: number;
+}
+
+export interface Item {
+  product: Product;
+  subtotal: number;
+  quantity: number;
+}
+
+export interface Product {
+  uuid: string;
+  name: string;
+  imageUrl: string;
+  price: number;
+}
 
 export const useCart = () => {
   const context = useContext(CartContext);
@@ -47,26 +53,20 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   );
 
   //fetching cart api using query
-  const { data: cartItems = [], isLoading } = useQuery<CartItem[]>({
+  const { data: cart, isLoading } = useQuery({
     queryKey: ["cart"],
     queryFn: async () => {
-      const response = await instance.get("/cart");
-      return response.data?.items;
+      const response = await instance.get<GetCartResponse>("/cart");
+      return response?.data;
     },
   });
 
   //Mutation for adding to cart
   const { mutate: addToCartMutation } = useMutation({
-    mutationFn: async (product: {
-      uuid: string;
-      name: string;
-      imageUrl: string;
-      price: number;
-      quantity: number;
-    }) => {
-      setMutatingProductId(product.uuid);
+    mutationFn: async (productId: string) => {
+      setMutatingProductId(productId);
       await instance.post("/cart/add", {
-        product: product.uuid,
+        product: productId,
         quantity: 1,
       });
     },
@@ -112,17 +112,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     },
   });
 
-  const addToCart = (product: {
-    uuid: string;
-    name: string;
-    imageUrl: string;
-    price: number;
-    quantity: number;
-  }) => {
+  const addToCart = (productId: string) => {
     if (!isAuthenticated()) {
       return false;
     }
-    addToCartMutation(product);
+    addToCartMutation(productId);
     return true;
   };
 
@@ -131,7 +125,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const incrementQuantity = (productId: string) => {
-    const item = cartItems.find((item) => item.productId === productId);
+    const item = cart?.items.find((item) => item.product.uuid === productId);
     if (item) {
       updateQuantityMutation({
         productId,
@@ -141,7 +135,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const decrementQuantity = (productId: string) => {
-    const item = cartItems.find((item) => item.productId === productId);
+    const item = cart?.items.find((item) => item.product.uuid === productId);
     if (item) {
       const newQuantity = Math.max(1, item.quantity - 1);
       updateQuantityMutation({
@@ -151,10 +145,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const cartItemCount = cartItems.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
+  const cartItemCount =
+    cart?.items.reduce((total, item) => total + item.quantity, 0) || 0;
 
   const isMutating = (productId?: string) => {
     if (!productId) return false;
@@ -164,7 +156,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   return (
     <CartContext.Provider
       value={{
-        cartItems,
+        cart,
         addToCart,
         removeFromCart,
         incrementQuantity,

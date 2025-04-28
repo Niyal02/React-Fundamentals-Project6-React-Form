@@ -3,7 +3,7 @@ import { useCart } from "./CartContext";
 
 const Cart = () => {
   const {
-    cartItems,
+    cart,
     removeFromCart,
     incrementQuantity,
     decrementQuantity,
@@ -12,10 +12,11 @@ const Cart = () => {
     isMutating,
   } = useCart();
 
-  const totalPrice = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
+  const totalPrice =
+    cart?.items.reduce(
+      (total, item) => total + item.product.price * item.quantity,
+      0
+    ) || 0;
 
   if (isLoading) {
     return (
@@ -40,15 +41,15 @@ const Cart = () => {
         </div>
       ) : (
         <div className="space-y-4">
-          {cartItems.map((item) => (
+          {cart?.items.map((item) => (
             <div
-              key={item.productId}
+              key={item.product.uuid}
               className="flex items-center justify-between p-4 bg-white rounded-lg shadow"
             >
               <div className="flex items-center space-x-4">
                 <img
                   src={item.product.imageUrl}
-                  alt={item.name}
+                  alt={item.product.name}
                   className="w-16 h-16 object-cover rounded"
                 />
                 <div>
@@ -60,10 +61,10 @@ const Cart = () => {
               </div>
               <div className="felx items-center space-x-2">
                 <button
-                  disabled={isMutating(item.productId)}
-                  onClick={() => decrementQuantity(item.productId)}
+                  disabled={isMutating(item.product.uuid)}
+                  onClick={() => decrementQuantity(item.product.uuid)}
                   className={`px-2 py-1 bg-gray-200 rounded ${
-                    isMutating(item.productId)
+                    isMutating(item.product.uuid)
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-gray-300"
                   }`}
@@ -73,10 +74,10 @@ const Cart = () => {
 
                 <span>{item.quantity}</span>
                 <button
-                  disabled={isMutating(item.productId)}
-                  onClick={() => incrementQuantity(item.productId)}
+                  disabled={isMutating(item.product.uuid)}
+                  onClick={() => incrementQuantity(item.product.uuid)}
                   className={`px-2 py-1 bg-gray-200 rounded ${
-                    isMutating(item.productId)
+                    isMutating(item.product.uuid)
                       ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-gray-300"
                   }`}
@@ -85,10 +86,10 @@ const Cart = () => {
                 </button>
 
                 <button
-                  disabled={isMutating(item.productId)}
-                  onClick={() => removeFromCart(item.productId)}
+                  disabled={isMutating(item.product.uuid)}
+                  onClick={() => removeFromCart(item.product.uuid)}
                   className={`ml-4 ${
-                    isMutating(item.productId)
+                    isMutating(item.product.uuid)
                       ? "opacity-50 cursor-not-allowed text-red-300"
                       : "text-red-500 hover:text-red-700"
                   }`}
