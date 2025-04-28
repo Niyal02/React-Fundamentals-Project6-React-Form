@@ -92,7 +92,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     },
   });
 
-  //Mutation for updating cart quantity
+  //Mutation for updating cart quantities
   const { mutate: updateQuantityMutation } = useMutation({
     mutationFn: async ({
       productId,
