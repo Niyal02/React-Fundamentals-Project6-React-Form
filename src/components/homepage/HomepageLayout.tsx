@@ -109,7 +109,7 @@ const HomepageLayout = () => {
               >
                 <FiShoppingCart />
                 {cartItemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  <span className="absolute -mt-10 m-4 bg-orange-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                     {cartItemCount}
                   </span>
                 )}
