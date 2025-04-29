@@ -18,7 +18,10 @@ const Logout = () => {
 
   return (
     <div className="flex justify-end mb-4">
-      <button className="flex mr-4 cursor-pointer" onClick={handleLogout}>
+      <button
+        className=" rounded flex mr-4 cursor-pointer"
+        onClick={handleLogout}
+      >
         Logout <FaSignOutAlt className="ml-2 size-5" />
       </button>
       <Toaster />

@@ -136,14 +136,15 @@ const HomepageLayout = () => {
           </div>
         </nav>
 
-        <Outlet />
         <div
-          className={`relative -ml-52 flex p-2 text-white rounded cursor-pointer transition-all duration-350 size-2${
+          className={`relative -ml-52 flex p-2 text-white  cursor-pointer transition-all duration-350 size-2${
             isCollapsed ? "w-16 justify-center" : "w-full"
-          } hover:w-30 hover:bg-amber-700 `}
+          }`}
         >
           <Logout />
         </div>
+
+        <Outlet />
 
         {/* Footer */}
         <footer className="bg-[#c7bead] py-4 mt-8 flex justify-center">
