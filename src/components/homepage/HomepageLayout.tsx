@@ -146,7 +146,7 @@ const HomepageLayout = () => {
 
         <Outlet />
 
-        {/* Footer */}
+        {/* Footerr */}
         <footer className="bg-[#c7bead] py-4 mt-8 flex justify-center">
           <div className="text-black text-sm">
             Copyright © 2025 | Privacy Policy
