@@ -2,6 +2,7 @@ import { Toaster } from "react-hot-toast";
 import { FaSignOutAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import instance from "../../axios/axios";
+import { toast } from "react-toastify";
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const Logout = () => {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("role");
       navigate("/home");
+      toast("Logged out Successfully. Refresh the page once.");
     } catch (error) {
       console.log("Logout Failed", error);
     }

@@ -136,17 +136,19 @@ const HomepageLayout = () => {
           </div>
         </nav>
 
-        <div
-          className={`relative -ml-52 flex p-2 text-white  cursor-pointer transition-all duration-350 size-2${
-            isCollapsed ? "w-16 justify-center" : "w-full"
-          }`}
-        >
-          <Logout />
-        </div>
+        {accessToken && (
+          <div
+            className={`fixed bottom-4 -ml-52 flex p-2 text-white  cursor-pointer transition-all duration-350 size-2${
+              isCollapsed ? "w-16 justify-center" : "w-full"
+            } `}
+          >
+            <Logout />
+          </div>
+        )}
 
         <Outlet />
 
-        {/* Footerr */}
+        {/* Footer */}
         <footer className="bg-[#c7bead] py-4 mt-8 flex justify-center">
           <div className="text-black text-sm">
             Copyright © 2025 | Privacy Policy
