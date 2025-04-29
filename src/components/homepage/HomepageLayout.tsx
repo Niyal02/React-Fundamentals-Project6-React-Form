@@ -5,6 +5,7 @@ import { FaBars, FaTimes } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import { useCategories } from "../../hooks/use-categories";
 import { useCart } from "../cart/CartContext";
+import Logout from "../logout/Logout";
 
 type Category = {
   uuid: string;
@@ -136,6 +137,13 @@ const HomepageLayout = () => {
         </nav>
 
         <Outlet />
+        <div
+          className={`relative -ml-52 flex p-2 text-white rounded cursor-pointer transition-all duration-350 size-2${
+            isCollapsed ? "w-16 justify-center" : "w-full"
+          } hover:w-30 hover:bg-amber-700 `}
+        >
+          <Logout />
+        </div>
 
         {/* Footer */}
         <footer className="bg-[#c7bead] py-4 mt-8 flex justify-center">

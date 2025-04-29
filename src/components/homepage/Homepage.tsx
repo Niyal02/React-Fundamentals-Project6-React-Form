@@ -87,7 +87,7 @@ const HomePage = () => {
                       disabled={isMutating(product.uuid)}
                       className={`px-3 py-1 rounded text-sm ${
                         isInCart
-                          ? "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                          ? "bg-orange-600 text-white hover:bg-orange-700"
                           : "bg-orange-600 text-white hover:bg-orange-700"
                       } ${
                         isMutating(product.uuid)
