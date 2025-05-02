@@ -116,7 +116,7 @@ const HomepageLayout = () => {
                 )}
               </Link>
 
-              {/* Loginn */}
+              {/* Login */}
               {accessToken ? (
                 <button
                   // onClick={handleLogin}
