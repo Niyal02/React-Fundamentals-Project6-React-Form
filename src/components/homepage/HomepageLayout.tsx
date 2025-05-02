@@ -119,7 +119,7 @@ const HomepageLayout = () => {
               {/* Login */}
               {accessToken ? (
                 <button
-                  // onClick={handleLogin}
+                  // onClick={handleLogin
                   className="px-3 py-1 rounded-md text-sm font-medium bg-orange-600 hover:bg-orange-700 text-white"
                 >
                   Login
@@ -140,7 +140,7 @@ const HomepageLayout = () => {
           <div
             className={`fixed bottom-4 -ml-52 flex p-2 text-white  cursor-pointer transition-all duration-350 size-2${
               isCollapsed ? "w-16 justify-center" : "w-full"
-            } `}
+            }`}
           >
             <Logout />
           </div>
