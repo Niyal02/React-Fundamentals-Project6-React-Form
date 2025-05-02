@@ -116,10 +116,10 @@ const HomepageLayout = () => {
                 )}
               </Link>
 
-              {/* Login */}
+              {/* Loginn */}
               {accessToken ? (
                 <button
-                  // onClick={handleLogin
+                  // onClick={handleLogin}
                   className="px-3 py-1 rounded-md text-sm font-medium bg-orange-600 hover:bg-orange-700 text-white"
                 >
                   Login
