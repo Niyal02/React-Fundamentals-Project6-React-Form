@@ -26,7 +26,7 @@ const HomepageLayout = () => {
 
   return (
     <div className="flex min-h-screen bg-[#dad5cb]">
-      {/* Sidebarr  */}
+      {/* Sidebar  */}
       <div
         className={`bg-amber-800 h-screen p-4 flex flex-col text-white fixed transition-all duration-300 ${
           isCollapsed ? "w-16" : "w-56"
